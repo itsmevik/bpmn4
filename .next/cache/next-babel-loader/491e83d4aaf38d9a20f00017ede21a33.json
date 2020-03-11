@@ -1,0 +1,1 @@
+{"ast":null,"code":"export var drawerWidth = 240;","map":{"version":3,"sources":["/Users/believecreative/Kumar/bpmn/constants/index.js"],"names":["drawerWidth"],"mappings":"AAAA,OAAO,IAAMA,WAAW,GAAG,GAApB","sourcesContent":["export const drawerWidth = 240;\n"]},"metadata":{},"sourceType":"module"}
