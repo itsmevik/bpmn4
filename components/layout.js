@@ -1,22 +1,22 @@
 import Header from './header';
 import { Container, Typography } from '@material-ui/core';
+import auth0 from '../utils/auth0';
+import { UserProvider } from '../hooks/user';
 
-export default function Layout(props) {
+const Layout = ({ user, loading = false, children, fullWidth }) => {
   return (
-    <div>
-      <style jsx global>{`
-        body {
-          margin: 0;
-        }
-      `}</style>
-      <Header></Header>
+    <UserProvider value={{ user, loading }}>
       <div>
-        {props.fullWidth ? (
-          props.children
-        ) : (
-          <Container>{props.children}</Container>
-        )}
+        <style jsx global>{`
+          body {
+            margin: 0;
+          }
+        `}</style>
+        <Header></Header>
+        <div>{fullWidth ? children : <Container>{children}</Container>}</div>
       </div>
-    </div>
+    </UserProvider>
   );
-}
+};
+
+export default Layout;
