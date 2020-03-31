@@ -1,9 +1,15 @@
 import Header from './header';
 import { Container, Typography } from '@material-ui/core';
 import auth0 from '../utils/auth0';
-import { UserProvider } from '../hooks/user';
+import { UserProvider, useFetchUser } from '../hooks/user';
 
-const Layout = ({ user, loading = false, children, fullWidth }) => {
+const Layout = ({ gated = false, children = null, fullWidth }) => {
+  const { user, loading } = useFetchUser();
+  if (gated) {
+    if (!loading && !user) {
+      return this.props.url.push('/');
+    }
+  }
   return (
     <UserProvider value={{ user, loading }}>
       <div>

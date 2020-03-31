@@ -39,7 +39,6 @@ const useStyles = makeStyles(theme => ({
 export default function Header() {
   const classes = useStyles();
   const { user, loading } = useFetchUser();
-  console.log(user, 'user', loading);
   return (
     <div className={classes.root}>
       <AppBar position="static" className={classes.appBar}>

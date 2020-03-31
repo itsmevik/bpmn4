@@ -1,23 +1,24 @@
 import Layout from '../components/layout';
 import { Paper, Button, Card } from '@material-ui/core';
 import Link from 'next/link';
+import { useFetchUser } from '../hooks/user';
 
 export default function() {
+  const { user, loading } = useFetchUser();
   return (
     <React.Fragment>
       <Layout>
-        <div className="button-container-wrapper">
-          <div className="button-container">
-            <Link href="/bpmn">
-              <Button variant="contained" color="primary" size="large">
-                Add New
-              </Button>
-            </Link>
-            <Button variant="outlined" color="secondary" size="large">
-              Open
-            </Button>
+        {user && (
+          <div className="button-container-wrapper">
+            <div className="button-container">
+              <Link href="/dashboard">
+                <Button variant="contained" color="primary" size="large">
+                  Dashboard
+                </Button>
+              </Link>
+            </div>
           </div>
-        </div>
+        )}
       </Layout>
       <style>{`
         .button-container-wrapper{
