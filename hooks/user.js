@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 
 import fetch from 'isomorphic-fetch';
 
-let userState;
+let userState, userInfo;
 
-const User = React.createContext({ user: null, loading: false });
+const User = React.createContext({ user: null, userLoading: false });
 
 export const fetchUser = async () => {
   if (userState != undefined) {
@@ -13,8 +13,8 @@ export const fetchUser = async () => {
   const res = await fetch('/api/me');
   userState = res.ok ? await res.json() : null;
   console.log(userState);
-  if (userState != null) {
-    const userInfo = await fetch('/api/adduser', {
+  if (userState != null && userInfo == null) {
+    userInfo = await fetch('/api/adduser', {
       method: 'POST',
       body: JSON.stringify({
         user_sub: userState.sub,
@@ -23,7 +23,7 @@ export const fetchUser = async () => {
         email: userState.email
       })
     });
-    console.log(userInfo);
+    //console.log(userInfo);
   }
   return userState;
 };
@@ -43,10 +43,11 @@ export const useUser = () => React.useContext(User);
 export const useFetchUser = () => {
   const [data, setUser] = React.useState({
     user: userState || null,
-    loading: userState === undefined
+    userLoading: userState === undefined
   });
 
   React.useEffect(() => {
+    console.log(userState, ' user state');
     if (userState !== undefined) {
       return;
     }
@@ -54,8 +55,7 @@ export const useFetchUser = () => {
 
     fetchUser().then(user => {
       if (isMounted) {
-        console.log(user);
-        setUser({ user, loading: false });
+        setUser({ user, userLoading: false });
       }
     });
 

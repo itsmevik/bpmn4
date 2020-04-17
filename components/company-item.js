@@ -1,6 +1,7 @@
 import { Card, Typography, CardContent, Box } from '@material-ui/core';
 import BusinessIcon from '@material-ui/icons/Business';
 import { makeStyles } from '@material-ui/styles';
+import CompanyItemMenu from './company-item-menu';
 
 const useStyles = makeStyles(theme => ({
   cardHeaderText: {
@@ -10,7 +11,13 @@ const useStyles = makeStyles(theme => ({
     display: 'flex'
   },
   cardBox: {
-    padding: '13px 29px'
+    padding: '13px 29px',
+    height: 170
+  },
+  cardBoxHeader: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center'
   },
   cardIcon: {
     fontSize: 20,
@@ -36,7 +43,7 @@ export default function CompanyItem(props) {
   const classes = useStyles();
   return (
     <Card className={classes.cardBox}>
-      <div className="cardbox-header">
+      <div className={classes.cardBoxHeader}>
         <Typography
           className={classes.cardHeaderText}
           color="textSecondary"
@@ -45,6 +52,12 @@ export default function CompanyItem(props) {
           <BusinessIcon className={classes.cardIcon} />
           <span className={classes.cardBoxHeadeText}>Company</span>
         </Typography>
+        <CompanyItemMenu
+          onEdit={() => props.onEdit(props.company.c_id)}
+          onDelete={() =>
+            props.onDelete(props.company.c_id, props.company.name)
+          }
+        ></CompanyItemMenu>
       </div>
       <CardContent className={classes.cardContent}>
         <Typography component="h6" variant="h6" color="primary">

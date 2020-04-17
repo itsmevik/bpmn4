@@ -4,25 +4,28 @@ import auth0 from '../utils/auth0';
 import { UserProvider, useFetchUser } from '../hooks/user';
 import Router from 'next/router';
 
-const Layout = ({ gated = false, children = null, fullWidth }) => {
-  const { user, loading } = useFetchUser();
+const Layout = ({
+  gated = false,
+  children = null,
+  fullWidth,
+  user,
+  userLoading
+}) => {
   if (gated) {
-    if (!loading && !user) {
+    if (!userLoading && !user) {
       Router.push('/');
     }
   }
   return (
-    <UserProvider value={{ user, loading }}>
-      <div>
-        <style jsx global>{`
-          body {
-            margin: 0;
-          }
-        `}</style>
-        <Header></Header>
-        <div>{fullWidth ? children : <Container>{children}</Container>}</div>
-      </div>
-    </UserProvider>
+    <div>
+      <style jsx global>{`
+        body {
+          margin: 0;
+        }
+      `}</style>
+      <Header user={user}></Header>
+      <div>{fullWidth ? children : <Container>{children}</Container>}</div>
+    </div>
   );
 };
 

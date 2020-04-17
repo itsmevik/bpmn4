@@ -24,9 +24,10 @@ const useStyles = makeStyles(theme => ({
 
 export default function() {
   const classes = useStyles();
+  const { user, userLoading } = useFetchUser();
   return (
     <React.Fragment>
-      <Layout fullWidth={true}>
+      <Layout fullWidth={true} user={user} userLoading={userLoading}>
         {/* <Drawer
           variant="permanent"
           className={classes.drawer}

@@ -4,10 +4,10 @@ import Link from 'next/link';
 import { useFetchUser } from '../hooks/user';
 
 export default function() {
-  const { user, loading } = useFetchUser();
+  const { user, userLoading } = useFetchUser();
   return (
     <React.Fragment>
-      <Layout>
+      <Layout user={user} userLoading={userLoading}>
         {user && (
           <div className="button-container-wrapper">
             <div className="button-container">

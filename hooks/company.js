@@ -17,7 +17,7 @@ const fetchCompanies = async user => {
 
 export const useFetchCompanies = user => {
   const [data, setCompanies] = React.useState({
-    companies: companies || null,
+    companiesFromAPI: companies || null,
     companiesLoading: companies == undefined || user == undefined
   });
   React.useEffect(() => {
@@ -28,9 +28,8 @@ export const useFetchCompanies = user => {
     fetchCompanies(user).then(companyData => {
       if (isMounted) {
         setCompanies({
-          companies: companyData,
-          companiesLoading: false,
-          setCompanies: setCompanies
+          companiesFromAPI: companyData,
+          companiesLoading: false
         });
       }
     });
