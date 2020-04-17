@@ -12,6 +12,19 @@ export const fetchUser = async () => {
   }
   const res = await fetch('/api/me');
   userState = res.ok ? await res.json() : null;
+  console.log(userState);
+  if (userState != null) {
+    const userInfo = await fetch('/api/adduser', {
+      method: 'POST',
+      body: JSON.stringify({
+        user_sub: userState.sub,
+        name: userState.name,
+        user_photo: userState.picture,
+        email: userState.email
+      })
+    });
+    console.log(userInfo);
+  }
   return userState;
 };
 

@@ -2,12 +2,13 @@ import Header from './header';
 import { Container, Typography } from '@material-ui/core';
 import auth0 from '../utils/auth0';
 import { UserProvider, useFetchUser } from '../hooks/user';
+import Router from 'next/router';
 
 const Layout = ({ gated = false, children = null, fullWidth }) => {
   const { user, loading } = useFetchUser();
   if (gated) {
     if (!loading && !user) {
-      return this.props.url.push('/');
+      Router.push('/');
     }
   }
   return (

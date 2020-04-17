@@ -1,0 +1,12 @@
+{
+  "build": {
+    "env": {
+      "AUTH0_DOMAIN": "bpmn4.auth0.com",
+      "AUTH0_CLIENT_ID": "g7V8aJPGDv6CXtxYKpfbIaD7xT1B7Uh6",
+      "AUTH0_CLIENT_SECRET": "a69o01FWOmuqo01EsTkaw3gYvx_B3-vh0VApGPfaOaVnyfvEV1ypawEyk1gztVR4",
+      "REDIRECT_URI": "https://bpmn.now.sh/api/callback",
+      "POST_LOGOUT_REDIRECT_URI": "https://bpmn.now.sh/",
+      "API_BASE_URI": "https://headless.bpmn4.com/api/"
+    }
+  }
+}
