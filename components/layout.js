@@ -9,11 +9,16 @@ const Layout = ({
   children = null,
   fullWidth,
   user,
-  userLoading
+  userLoading,
+  ...props
 }) => {
+  console.log(props);
   if (gated) {
     if (!userLoading && !user) {
-      Router.push('/');
+      if (typeof window === 'undefined') {
+      } else {
+        Router.push('/');
+      }
     }
   }
   return (

@@ -18,7 +18,6 @@ export default async function adduser(req, res) {
         email: reqBody.email
       })
     });
-    console.log(response);
     const user = response.json();
     //res.status(200).send('OK');
     res.status(200).json(user);
