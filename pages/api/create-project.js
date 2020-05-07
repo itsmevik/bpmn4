@@ -2,7 +2,7 @@ import fetch from 'isomorphic-fetch';
 
 export default async function(req, res) {
   try {
-    const url = process.env.API_BASE_URI + 'companies/create-project';
+    const url = process.env.API_BASE_URI + 'projects/create-project';
     var reqBody = JSON.parse(req.body);
     const response = await fetch(url, {
       method: 'POST',

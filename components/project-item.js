@@ -1,7 +1,7 @@
 import { Card, Typography, CardContent, Box } from '@material-ui/core';
 import FolderOutlinedIcon from '@material-ui/icons/FolderOutlined';
 import { makeStyles } from '@material-ui/styles';
-import CompanyItemMenu from './company-item-menu';
+import ProjectItemMenu from './project-item-menu';
 
 const useStyles = makeStyles(theme => ({
   cardHeaderText: {
@@ -52,12 +52,12 @@ export default function ProjectItem(props) {
           <FolderOutlinedIcon className={classes.cardIcon} />
           <span className={classes.cardBoxHeadeText}>Project</span>
         </Typography>
-        <CompanyItemMenu
+        <ProjectItemMenu
           onEdit={() => props.onEdit(props.project.p_id)}
           onDelete={() =>
             props.onDelete(props.project.p_id, props.project.name)
           }
-        ></CompanyItemMenu>
+        ></ProjectItemMenu>
       </div>
       <CardContent className={classes.cardContent}>
         <Typography component="h6" variant="h6" color="primary">

@@ -9,6 +9,7 @@ import { useFetchProjects } from '../../hooks/project';
 import AddIcon from '@material-ui/icons/Add';
 import CreateProject from '../../components/dialogs/create-project';
 import fetch from 'isomorphic-fetch';
+import DeleteConfirmation from '../../components/dialogs/delete-confirmation';
 
 export default function(props) {
   const { user, userLoading } = useFetchUser();
@@ -20,7 +21,12 @@ export default function(props) {
   const [createProjectDialogOpened, setCreateProjectDialogOpened] = useState(
     false
   );
-
+  const [projectIdToDelete, setProjectIdToDelete] = useState('');
+  const [projectNameToDelete, setProjectNameToDelete] = useState('');
+  const [
+    deleteConfirmationDialogOpened,
+    setDeleteConfirmationDialogOpened
+  ] = useState(false);
   useEffect(() => {
     setProjects(projectsFromAPI);
   }, [projectsFromAPI]);
@@ -34,10 +40,14 @@ export default function(props) {
   };
 
   const handleDeleteProject = (projectId, projectName) => {
-    console.log(projectId, projectName);
+    setProjectIdToDelete(projectId);
+    setProjectNameToDelete(projectName);
+    setDeleteConfirmationDialogOpened(true);
   };
 
-  const handleEditProject = projectId => {};
+  const handleEditProject = projectId => {
+    Router.push(`/project/${projectId}`);
+  };
 
   const closeCreateProjectDialog = () => {
     setCreateProjectDialogOpened(false);
@@ -50,10 +60,19 @@ export default function(props) {
         user_sub: user.sub,
         name: projectName,
         description: projectDescription,
-        company_id: c_id
+        company_id: cid
       })
     });
-    console.log(projectName, projectDescription);
+    if (projectInfo.ok) {
+      var newProjectInfo = await projectInfo.json();
+      closeCreateProjectDialog();
+      if (projects) {
+        var updatedProjects = [...projects, newProjectInfo.response];
+        setProjects(updatedProjects);
+      } else {
+        setProjects([newProjectInfo.response]);
+      }
+    }
   };
 
   const getProjectsList = (projects, projectsLoading) => {
@@ -74,6 +93,29 @@ export default function(props) {
         });
       }
       return <div>You don't have any Projects</div>;
+    }
+  };
+
+  const deleteConfirmationDialogCancel = () => {
+    setDeleteConfirmationDialogOpened(false);
+  };
+
+  const deleteConfirmationDialogConfirm = async () => {
+    const projectInfo = await fetch('/api/delete-project', {
+      method: 'POST',
+      body: JSON.stringify({
+        user_sub: user.sub,
+        project_id: projectIdToDelete
+      })
+    });
+    if (projectInfo.ok) {
+      var updatedProjects = projects.filter(
+        project => project.p_id != projectIdToDelete
+      );
+      setProjects(updatedProjects);
+      setDeleteConfirmationDialogOpened(false);
+    } else {
+      setDeleteConfirmationDialogOpened(false);
     }
   };
 
@@ -113,6 +155,12 @@ export default function(props) {
           onCancel={closeCreateProjectDialog}
           onSubmit={createNewProject}
         ></CreateProject>
+        <DeleteConfirmation
+          message={`Are you sure to delete ${projectNameToDelete}?`}
+          open={deleteConfirmationDialogOpened}
+          onCancel={deleteConfirmationDialogCancel}
+          onConfirm={deleteConfirmationDialogConfirm}
+        ></DeleteConfirmation>
       </Layout>
     </Fragment>
   );

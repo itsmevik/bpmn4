@@ -34,6 +34,8 @@ export const useFetchProjects = (user, companyId) => {
           projectData.message == "User Company does't have projects"
         ) {
           setProjects({ projectsFromAPI: [], projectsLoading: false });
+        } else {
+          setProjects({ projectsFromAPI: projectData, projectsLoading: false });
         }
       }
     });
