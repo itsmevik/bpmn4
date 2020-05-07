@@ -40,10 +40,17 @@ export const useFetchCompanies = user => {
     let isMounted = true;
     fetchCompanies(user).then(companyData => {
       if (isMounted) {
-        setCompanies({
-          companiesFromAPI: companyData,
-          companiesLoading: false
-        });
+        if (companyData.error) {
+          setCompanies({
+            companiesFromAPI: [],
+            companiesLoading: false
+          });
+        } else {
+          setCompanies({
+            companiesFromAPI: companyData,
+            companiesLoading: false
+          });
+        }
       }
     });
     return () => {

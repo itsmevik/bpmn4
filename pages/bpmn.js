@@ -4,6 +4,7 @@ import { Drawer, makeStyles } from '@material-ui/core';
 //import BPMNContainer from '../components/bpmn/bpmn-container';
 import { drawerWidth } from '../constants';
 import { minHeight } from '@material-ui/system';
+import { useFetchUser } from '../hooks/user';
 const BPMNContainer = dynamic(
   () => import('../components/bpmn/bpmn-container'),
   { ssr: false }

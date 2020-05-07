@@ -9,9 +9,9 @@ export default function(props) {
       <Layout gated={true}>
         <div>Projects</div>
         <div>
-          <Grid item xs={3}>
+          {/* <Grid item xs={3}>
             <ProjectItem></ProjectItem>
-          </Grid>
+          </Grid> */}
         </div>
       </Layout>
     </Fragment>
