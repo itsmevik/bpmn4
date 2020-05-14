@@ -5,17 +5,17 @@ import {
   TextField,
   Button,
   Box,
-  DialogActions
-} from '@material-ui/core';
-import { useState } from 'react';
+  DialogActions,
+} from "@material-ui/core";
+import { useState } from "react";
 
-const CreateCompanyDialog = props => {
-  const [companyName, setCompanyName] = useState('');
-  const [companyDescription, setCompanyDescription] = useState('');
-  const companyNameChangeHandler = e => {
+const CreateCompanyDialog = (props) => {
+  const [companyName, setCompanyName] = useState("");
+  const [companyDescription, setCompanyDescription] = useState("");
+  const companyNameChangeHandler = (e) => {
     setCompanyName(e.target.value);
   };
-  const companyDescriptionChangeHandler = e => {
+  const companyDescriptionChangeHandler = (e) => {
     setCompanyDescription(e.target.value);
   };
   return (
@@ -31,7 +31,7 @@ const CreateCompanyDialog = props => {
               fullwidth
               label="Company Name"
               InputLabelProps={{
-                shrink: true
+                shrink: true,
               }}
               placeholder="Enter company name"
               value={companyName}
@@ -45,7 +45,7 @@ const CreateCompanyDialog = props => {
               fullwidth
               label="Description"
               InputLabelProps={{
-                shrink: true
+                shrink: true,
               }}
               placeholder="Enter company description"
               value={companyDescription}

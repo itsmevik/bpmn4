@@ -1,15 +1,15 @@
-import { Fragment, useState, useEffect } from 'react';
-import Layout from '../../components/layout';
-import { useFetchUser, useUser } from '../../hooks/user';
-import { Card, Typography, Grid, Box, Button } from '@material-ui/core';
-import Link from 'next/link';
-import AddIcon from '@material-ui/icons/Add';
-import CreateCompanyDialog from '../../components/dialogs/create-company';
-import { getRandomString } from '../../utils';
-import { useFetchCompanies } from '../../hooks/company';
-import CompanyItem from '../../components/company-item';
-import Router from 'next/router';
-import DeleteConfirmation from '../../components/dialogs/delete-confirmation';
+import { Fragment, useState, useEffect } from "react";
+import Layout from "../../components/layout";
+import { useFetchUser, useUser } from "../../hooks/user";
+import { Card, Typography, Grid, Box, Button } from "@material-ui/core";
+import Link from "next/link";
+import AddIcon from "@material-ui/icons/Add";
+import CreateCompanyDialog from "../../components/dialogs/create-company";
+import { getRandomString } from "../../utils";
+import { useFetchCompanies } from "../../hooks/company";
+import CompanyItem from "../../components/company-item";
+import Router from "next/router";
+import DeleteConfirmation from "../../components/dialogs/delete-confirmation";
 
 function Dashboard(props) {
   const { user, userLoading } = useFetchUser();
@@ -18,7 +18,7 @@ function Dashboard(props) {
   const [companies, setCompanies] = useState(companiesFromAPI);
   const [
     deleteConfirmationDialogOpened,
-    setDeleteConfirmationDialogOpened
+    setDeleteConfirmationDialogOpened,
   ] = useState(false);
 
   useEffect(() => {
@@ -26,8 +26,8 @@ function Dashboard(props) {
   }, [companiesFromAPI]);
 
   const [newCompanyDialogOpened, setNewCompanyDialogOpened] = useState(false);
-  const [companyIdToDelete, setCompanyIdToDelete] = useState('');
-  const [companyNameToDelete, setCompanyNameToDelete] = useState('');
+  const [companyIdToDelete, setCompanyIdToDelete] = useState("");
+  const [companyNameToDelete, setCompanyNameToDelete] = useState("");
 
   const handleCreateCompanyButtonClick = () => {
     setNewCompanyDialogOpened(true);
@@ -40,23 +40,23 @@ function Dashboard(props) {
     setCompanyNameToDelete(companyName);
     setDeleteConfirmationDialogOpened(true);
   };
-  const handleEditCompany = companyId => {
+  const handleEditCompany = (companyId) => {
     Router.push(`/company/${companyId}`);
   };
   const deleteConfirmationDialogCancel = () => {
     setDeleteConfirmationDialogOpened(false);
   };
   const deleteConfirmationDialogConfirm = async () => {
-    const companyInfo = await fetch('/api/delete-company', {
-      method: 'POST',
+    const companyInfo = await fetch("/api/delete-company", {
+      method: "POST",
       body: JSON.stringify({
         user_sub: user.sub,
-        company_id: companyIdToDelete
-      })
+        company_id: companyIdToDelete,
+      }),
     });
     if (companyInfo.ok) {
       var updatedCompanies = companies.filter(
-        company => company.c_id != companyIdToDelete
+        (company) => company.c_id != companyIdToDelete
       );
       setCompanies(updatedCompanies);
       setDeleteConfirmationDialogOpened(false);
@@ -65,13 +65,13 @@ function Dashboard(props) {
     }
   };
   const createNewCompany = async (companyName, companyDescription) => {
-    const companyInfo = await fetch('/api/create-company', {
-      method: 'POST',
+    const companyInfo = await fetch("/api/create-company", {
+      method: "POST",
       body: JSON.stringify({
         user_sub: user.sub,
         name: companyName,
-        description: companyDescription
-      })
+        description: companyDescription,
+      }),
     });
     if (companyInfo.ok) {
       var newCompanyInfo = await companyInfo.json();
@@ -89,7 +89,7 @@ function Dashboard(props) {
   const getCompaniesList = (companies, companiesLoading) => {
     if (!companiesLoading) {
       if (companies) {
-        return companies.map(company => {
+        return companies.map((company) => {
           return (
             <Grid item xs={12} sm={4} lg={3}>
               <CompanyItem
@@ -97,7 +97,7 @@ function Dashboard(props) {
                 onDelete={(companyId, companyName) =>
                   handleDeleteCompany(companyId, companyName)
                 }
-                onEdit={companyId => handleEditCompany(companyId)}
+                onEdit={(companyId) => handleEditCompany(companyId)}
               ></CompanyItem>
             </Grid>
           );
