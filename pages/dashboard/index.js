@@ -80,7 +80,7 @@ function Dashboard(props) {
         var updatedCompanies = [...companies, newCompanyInfo.response[0]];
         setCompanies(updatedCompanies);
       } else {
-        setCompanies([newCompanyInfo]);
+        setCompanies([newCompanyInfo.response[0]]);
       }
     } else {
       closeNewCompanyDialog();

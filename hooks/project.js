@@ -8,7 +8,8 @@ const fetchProjects = async (user, companyID) => {
   const res = await fetch('/api/get-projects', {
     method: 'POST',
     body: JSON.stringify({
-      user_sub: user.sub
+      user_sub: user.sub,
+      company_id: companyID
     })
   });
   projects = res.ok ? await res.json() : null;
@@ -18,13 +19,26 @@ const fetchProjects = async (user, companyID) => {
 export const useFetchProjects = (user, companyId) => {
   const [data, setProjects] = useState({
     projectsFromAPI: projects || null,
-    projects
+    projectsLoading: true
   });
   useEffect(() => {
     if (!user) {
       return;
     }
     let isMounted = true;
-    fetchProjects(user, companyId).then(projectData => {});
-  });
+    fetchProjects(user, companyId).then(projectData => {
+      if (isMounted) {
+        console.log(projectData);
+        if (
+          projectData &&
+          projectData.message == "User Company does't have projects"
+        ) {
+          setProjects({ projectsFromAPI: [], projectsLoading: false });
+        } else {
+          setProjects({ projectsFromAPI: projectData, projectsLoading: false });
+        }
+      }
+    });
+  }, [user]);
+  return data;
 };

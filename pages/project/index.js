@@ -7,11 +7,11 @@ export default function(props) {
   return (
     <Fragment>
       <Layout gated={true}>
-        <div>Projects</div>
+        <div>Project</div>
         <div>
-          <Grid item xs={3}>
+          {/* <Grid item xs={3}>
             <ProjectItem></ProjectItem>
-          </Grid>
+          </Grid> */}
         </div>
       </Layout>
     </Fragment>
