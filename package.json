@@ -4,9 +4,9 @@
   "description": "BPMN editor and viewer in react",
   "main": "index.js",
   "scripts": {
-    "dev": "next",
+    "dev": "SET NODE_ENV=development && node server/index.js",
     "build": "next build",
-    "start": "next start"
+    "start": "NODE_ENV=production node server/index.js"
   },
   "author": "",
   "license": "ISC",
@@ -19,8 +19,11 @@
     "bpmn-font": "^0.9.3",
     "bpmn-js": "^6.3.1",
     "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "http-proxy-middleware": "^1.0.4",
     "isomorphic-fetch": "^2.2.1",
     "next": "^9.2.2",
+    "next-cookies": "^2.0.3",
     "next-transpile-modules": "^3.0.2",
     "node-sass": "^4.13.1",
     "react": "^16.13.0",
