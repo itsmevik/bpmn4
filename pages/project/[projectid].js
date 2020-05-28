@@ -26,12 +26,12 @@ export default function (props) {
   // );
   const [flows, setFlows] = useState(flowsFromAPI);
   const [createFlowDialogOpened, setCreateFlowDialogOpened] = useState(false);
-  // const [projectIdToDelete, setProjectIdToDelete] = useState("");
-  // const [projectNameToDelete, setProjectNameToDelete] = useState("");
-  // const [
-  //   deleteConfirmationDialogOpened,
-  //   setDeleteConfirmationDialogOpened,
-  // ] = useState(false);
+  const [flowIdToDelete, setFlowIdToDelete] = useState("");
+  const [flowNameToDelete, setFlowNameToDelete] = useState("");
+  const [
+    deleteConfirmationDialogOpened,
+    setDeleteConfirmationDialogOpened,
+  ] = useState(false);
   useEffect(() => {
     setFlows(flowsFromAPI);
   }, [flowsFromAPI]);
@@ -44,11 +44,11 @@ export default function (props) {
     setCreateFlowDialogOpened(true);
   };
 
-  // const handleDeleteProject = (projectId, projectName) => {
-  //   setProjectIdToDelete(projectId);
-  //   setProjectNameToDelete(projectName);
-  //   setDeleteConfirmationDialogOpened(true);
-  // };
+  const handleDeleteFlow = (flowId, flowName) => {
+    setFlowIdToDelete(flowId);
+    setFlowNameToDelete(flowName);
+    setDeleteConfirmationDialogOpened(true);
+  };
 
   const closeCreateFlowDialog = () => {
     setCreateFlowDialogOpened(false);
@@ -106,28 +106,29 @@ export default function (props) {
     }
   };
 
-  // const deleteConfirmationDialogCancel = () => {
-  //   setDeleteConfirmationDialogOpened(false);
-  // };
+  const deleteConfirmationDialogCancel = () => {
+    setDeleteConfirmationDialogOpened(false);
+  };
 
-  // const deleteConfirmationDialogConfirm = async () => {
-  //   const projectInfo = await fetch("/api/delete-project", {
-  //     method: "POST",
-  //     body: JSON.stringify({
-  //       user_sub: user.sub,
-  //       project_id: projectIdToDelete,
-  //     }),
-  //   });
-  //   if (projectInfo.ok) {
-  //     var updatedProjects = projects.filter(
-  //       (project) => project.p_id != projectIdToDelete
-  //     );
-  //     setProjects(updatedProjects);
-  //     setDeleteConfirmationDialogOpened(false);
-  //   } else {
-  //     setDeleteConfirmationDialogOpened(false);
-  //   }
-  // };
+  const deleteConfirmationDialogConfirm = async () => {
+    const flowInfo = await fetch("/laravel/delete-flow", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        user_sub: user.sub,
+        f_id: flowIdToDelete,
+      }),
+    });
+    if (flowInfo.ok) {
+      var updatedFlows = flows.filter((flow) => flow.f_id != flowIdToDelete);
+      setFlows(updatedFlows);
+      setDeleteConfirmationDialogOpened(false);
+    } else {
+      setDeleteConfirmationDialogOpened(false);
+    }
+  };
 
   return (
     <Fragment>
@@ -165,12 +166,12 @@ export default function (props) {
           onCancel={closeCreateFlowDialog}
           onSubmit={createNewFlow}
         ></CreateFlow>
-        {/* <DeleteConfirmation
-          message={`Are you sure to delete ${projectNameToDelete}?`}
+        <DeleteConfirmation
+          message={`Are you sure to delete ${flowNameToDelete}?`}
           open={deleteConfirmationDialogOpened}
           onCancel={deleteConfirmationDialogCancel}
           onConfirm={deleteConfirmationDialogConfirm}
-        ></DeleteConfirmation>  */}
+        ></DeleteConfirmation>
       </Layout>
     </Fragment>
   );
