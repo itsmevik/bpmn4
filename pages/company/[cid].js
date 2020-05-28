@@ -1,17 +1,17 @@
-import { Fragment, useState, useEffect } from 'react';
-import Layout from '../../components/layout';
-import { Grid, Typography, Button } from '@material-ui/core';
-import ProjectItem from '../../components/project-item';
-import { useRouter } from 'next/router';
-import { useFetchUser } from '../../hooks/user';
-import { useFetchCompany } from '../../hooks/company';
-import { useFetchProjects } from '../../hooks/project';
-import AddIcon from '@material-ui/icons/Add';
-import CreateProject from '../../components/dialogs/create-project';
-import fetch from 'isomorphic-fetch';
-import DeleteConfirmation from '../../components/dialogs/delete-confirmation';
-
-export default function(props) {
+import { Fragment, useState, useEffect } from "react";
+import Layout from "../../components/layout";
+import { Grid, Typography, Button } from "@material-ui/core";
+import ProjectItem from "../../components/project-item";
+import { useRouter } from "next/router";
+import { useFetchUser } from "../../hooks/user";
+import { useFetchCompany } from "../../hooks/company";
+import { useFetchProjects } from "../../hooks/project";
+import AddIcon from "@material-ui/icons/Add";
+import CreateProject from "../../components/dialogs/create-project";
+import fetch from "isomorphic-fetch";
+import DeleteConfirmation from "../../components/dialogs/delete-confirmation";
+import Router from "next/router";
+export default function (props) {
   const { user, userLoading } = useFetchUser();
   const router = useRouter();
   const { cid } = router.query;
@@ -21,18 +21,18 @@ export default function(props) {
   const [createProjectDialogOpened, setCreateProjectDialogOpened] = useState(
     false
   );
-  const [projectIdToDelete, setProjectIdToDelete] = useState('');
-  const [projectNameToDelete, setProjectNameToDelete] = useState('');
+  const [projectIdToDelete, setProjectIdToDelete] = useState("");
+  const [projectNameToDelete, setProjectNameToDelete] = useState("");
   const [
     deleteConfirmationDialogOpened,
-    setDeleteConfirmationDialogOpened
+    setDeleteConfirmationDialogOpened,
   ] = useState(false);
   useEffect(() => {
     setProjects(projectsFromAPI);
   }, [projectsFromAPI]);
 
   if (companyFromAPI == null && !companyLoading) {
-    router.push('/dashboard');
+    router.push("/dashboard");
   }
 
   const handleCreateProjectButtonClick = () => {
@@ -45,7 +45,7 @@ export default function(props) {
     setDeleteConfirmationDialogOpened(true);
   };
 
-  const handleEditProject = projectId => {
+  const handleEditProject = (projectId) => {
     Router.push(`/project/${projectId}`);
   };
 
@@ -54,14 +54,14 @@ export default function(props) {
   };
 
   const createNewProject = async (projectName, projectDescription) => {
-    const projectInfo = await fetch('/api/create-project', {
-      method: 'POST',
+    const projectInfo = await fetch("/api/create-project", {
+      method: "POST",
       body: JSON.stringify({
         user_sub: user.sub,
         name: projectName,
         description: projectDescription,
-        company_id: cid
-      })
+        company_id: cid,
+      }),
     });
     if (projectInfo.ok) {
       var newProjectInfo = await projectInfo.json();
@@ -78,7 +78,7 @@ export default function(props) {
   const getProjectsList = (projects, projectsLoading) => {
     if (!projectsLoading) {
       if (projects) {
-        return projects.map(project => {
+        return projects.map((project) => {
           return (
             <Grid item xs={12} sm={4} lg={3}>
               <ProjectItem
@@ -86,7 +86,7 @@ export default function(props) {
                 onDelete={(projectId, projectName) =>
                   handleDeleteProject(projectId, projectName)
                 }
-                onEdit={projectId => handleEditProject(projectId)}
+                onEdit={(projectId) => handleEditProject(projectId)}
               ></ProjectItem>
             </Grid>
           );
@@ -101,16 +101,16 @@ export default function(props) {
   };
 
   const deleteConfirmationDialogConfirm = async () => {
-    const projectInfo = await fetch('/api/delete-project', {
-      method: 'POST',
+    const projectInfo = await fetch("/api/delete-project", {
+      method: "POST",
       body: JSON.stringify({
         user_sub: user.sub,
-        project_id: projectIdToDelete
-      })
+        project_id: projectIdToDelete,
+      }),
     });
     if (projectInfo.ok) {
       var updatedProjects = projects.filter(
-        project => project.p_id != projectIdToDelete
+        (project) => project.p_id != projectIdToDelete
       );
       setProjects(updatedProjects);
       setDeleteConfirmationDialogOpened(false);
@@ -126,10 +126,10 @@ export default function(props) {
           <Grid item xs={12}>
             <div className="main-title">
               <Typography variant="h3">
-                {companyFromAPI ? companyFromAPI.name : ''}
+                {companyFromAPI ? companyFromAPI.name : ""}
               </Typography>
               <Typography>
-                {companyFromAPI ? companyFromAPI.description : ''}
+                {companyFromAPI ? companyFromAPI.description : ""}
               </Typography>
             </div>
           </Grid>
