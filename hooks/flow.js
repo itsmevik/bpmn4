@@ -36,7 +36,8 @@ export const useFetchFlows = (projectId, user) => {
         if (flowData && flowData.message == "User Company does't have flows") {
           setFlows({ flowsFromAPI: [], flowsLoading: false });
         } else {
-          setFlows({ flowsFromAPI: flowData, flowsLoading: false });
+          setFlows({ flowsFromAPI: flowData.response, flowsLoading: false });
+          console.log("flows", flowData);
         }
       }
     });

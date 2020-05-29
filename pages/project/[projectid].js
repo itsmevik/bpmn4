@@ -50,6 +50,10 @@ export default function (props) {
     setDeleteConfirmationDialogOpened(true);
   };
 
+  const handleEditFlow = (flowId) => {
+    Router.push(`/flow/${flowId}`);
+  };
+
   const closeCreateFlowDialog = () => {
     setCreateFlowDialogOpened(false);
   };
@@ -74,7 +78,11 @@ export default function (props) {
       var newFlowInfo = await flowInfo.json();
       closeCreateFlowDialog();
       if (flows) {
-        var updatedFlows = [...flows, newFlowInfo.response];
+        console.log("newflow", newFlowInfo.response[0]);
+        console.log("flows", flows);
+
+        var updatedFlows = [...flows, newFlowInfo.response[0]];
+
         setFlows(updatedFlows);
       } else {
         setFlows([newFlowInfo.response]);
@@ -85,7 +93,7 @@ export default function (props) {
   const getFlowsList = (flows, flowsLoading) => {
     if (!flowsLoading) {
       if (flows) {
-        if (flows.response) flows = flows.response;
+        // if (flows.response) flows = flows.response;
         console.log("flows", flows);
 
         return flows.map((flow) => {
