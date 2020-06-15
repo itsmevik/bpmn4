@@ -6,11 +6,12 @@ export default class BPMNContainer extends React.Component {
     this.modeler = new BpmnModeler({
       container: "#bpmnview",
     });
-    this.newDiagram();
+    // this.newDiagram();
+    this.openDiagram(this.props.flow.flow_file);
   }
-  newDiagram() {
-    this.openDiagram(emptyBpmn);
-  }
+  // newDiagram() {
+
+  // }
   openDiagram(xml) {
     this.modeler.importXML(xml, (error) => {
       if (error) {

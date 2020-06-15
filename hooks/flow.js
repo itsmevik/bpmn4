@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import fetch from "isomorphic-fetch";
 
 let flows;
+let flow;
 
 const fetchFlows = async (projectId, user) => {
   const res = await fetch("/laravel/get-flows", {
@@ -15,8 +16,29 @@ const fetchFlows = async (projectId, user) => {
       user_sub: user.sub,
     }),
   });
+  console.log("flows", res);
+
   flows = res.ok ? await res.json() : null;
   return flows;
+};
+
+const fetchFlow = async (user, flowId) => {
+  const res = await fetch("/laravel/get-flow", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      user_sub: user.sub,
+      f_id: flowId,
+    }),
+  });
+  //console.log("fetchflow", res);
+
+  flow = res.ok ? await res.json() : null;
+  console.log("response", flow.response.flow_file);
+
+  return flow;
 };
 
 export const useFetchFlows = (projectId, user) => {
@@ -41,6 +63,40 @@ export const useFetchFlows = (projectId, user) => {
         }
       }
     });
+  }, [user]);
+  return data;
+};
+
+export const useFetchFlow = (user, flowId) => {
+  const [data, setFlow] = React.useState({
+    flowFromAPI: flow || null,
+    flowLoading: flow == undefined || user == undefined,
+  });
+  React.useEffect(() => {
+    if (!user || flow !== undefined) {
+      return;
+    }
+    let isMounted = true;
+    fetchFlow(user, flowId).then((flowData) => {
+      if (isMounted) {
+        console.log(flowData);
+
+        if (flowData.response) {
+          setFlow({
+            flowFromAPI: flowData.response,
+            flowLoading: false,
+          });
+        } else {
+          setFlow({
+            flowFromAPI: null,
+            flowLoading: false,
+          });
+        }
+      }
+    });
+    return () => {
+      isMounted = false;
+    };
   }, [user]);
   return data;
 };
