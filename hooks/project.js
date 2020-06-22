@@ -28,7 +28,6 @@ export const useFetchProjects = (user, companyId) => {
     let isMounted = true;
     fetchProjects(user, companyId).then((projectData) => {
       if (isMounted) {
-        console.log(projectData);
         if (
           projectData &&
           projectData.message == "User Company does't have projects"

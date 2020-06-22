@@ -13,18 +13,27 @@ import DeleteConfirmation from "../../components/dialogs/delete-confirmation";
 import Router from "next/router";
 import dynamic from "next/dynamic";
 import emptyBPMN from "../../components/bpmn/empty.bpmn";
+import { makeStyles } from "@material-ui/styles";
+import EditFlow from "../../components/dialogs/edit-flow";
 
+const useStyles = makeStyles((theme) => ({
+  gridClass: {
+    position: "relative",
+  },
+}));
 export default function (props) {
   const { user, userLoading } = useFetchUser();
   const router = useRouter();
   const { projectid } = router.query;
   const { flowsFromAPI, flowsLoading } = useFetchFlows(projectid, user);
+  const [flows, setFlows] = useState(flowsFromAPI);
 
   // const { projectsFromAPI, projectsLoading } = useFetchProjects(
   //   user,
   //   projectid
   // );
-  const [flows, setFlows] = useState(flowsFromAPI);
+  const [editFlowDialogClose, setEditFlowDialogClose] = useState(false);
+
   const [createFlowDialogOpened, setCreateFlowDialogOpened] = useState(false);
   const [flowIdToDelete, setFlowIdToDelete] = useState("");
   const [flowNameToDelete, setFlowNameToDelete] = useState("");
@@ -60,7 +69,6 @@ export default function (props) {
 
   const createNewFlow = async (flowName, flowDescription) => {
     var file = new File([emptyBPMN], "emptyBPMN.xml", { type: "text/plain" });
-    console.log("fsfs", file);
     var formData = new FormData();
 
     formData.append("user_sub", user.sub);
@@ -69,17 +77,19 @@ export default function (props) {
     formData.append("name", flowName);
     formData.append("description", flowDescription);
 
-    const flowInfo = await fetch("/laravel/create-flow", {
+    const flowInfo = await fetch("/laravel/flows/create-flow", {
       method: "POST",
       // headers: { "content-type": "multipart/form-data" },
       body: formData,
     });
+    console.log("flows", flowInfo);
+
     if (flowInfo.ok) {
       var newFlowInfo = await flowInfo.json();
       closeCreateFlowDialog();
       if (flows) {
-        console.log("newflow", newFlowInfo.response[0]);
-        console.log("flows", flows);
+        // console.log("newflow", newFlowInfo.response[0]);
+        // console.log("flows", flowInfo);
 
         var updatedFlows = [...flows, newFlowInfo.response[0]];
 
@@ -90,16 +100,81 @@ export default function (props) {
     }
   };
 
+  const editFlow = async (flowName, flowDescription, flowData) => {
+    var file = new File([emptyBPMN], "emptyBPMN.xml", { type: "text/plain" });
+    var formData = new FormData();
+    formData.append("f_id", flowData.f_id);
+    formData.append("name", flowName);
+    formData.append("flow_file", file);
+    formData.append("user_sub", user.sub);
+    // formData.append("description", flowDescription);
+
+    const flowInfo = await fetch("/laravel/flows/update-flow", {
+      method: "POST",
+
+      body: formData,
+    });
+    if (flowInfo.ok && flowName != flowData.flowName) {
+      var newFlowInfo = await flowInfo.json();
+
+      if (flows) {
+        let ind = flows.findIndex((element) => element.f_id == flowData.f_id);
+        let filteredItems = flows.filter((item) => item.f_id !== flowData.f_id);
+
+        filteredItems.splice(ind, 0, newFlowInfo.response);
+        var updatedFlows = filteredItems;
+
+        setFlows(updatedFlows);
+        closeEditFlowDialog();
+      }
+    } else if (flowDescription != flowData.flowDescription) {
+      var newFlowInfo = await flowInfo.json();
+      if (flows) {
+        let index = flows.findIndex((element) => element.f_id == flowData.f_id);
+        const filteredItems = flows.filter(
+          (item) => item.f_id !== flowData.f_id
+        );
+        filteredItems.splice(index, 0, newFlowInfo.response);
+        var updatedFlows = filteredItems;
+        setFlows(updatedFlows);
+        closeEditFlowDialog();
+      }
+    } else {
+      closeEditFlowDialog();
+    }
+  };
+
+  const closeEditFlowDialog = () => {
+    setEditFlowDialogClose(true);
+  };
+  const openEditFlowDialog = () => {
+    setEditFlowDialogClose(false);
+  };
+
   const getFlowsList = (flows, flowsLoading) => {
+    const classes = useStyles();
+
     if (!flowsLoading) {
       if (flows) {
         // if (flows.response) flows = flows.response;
-        console.log("flows", flows);
+        // console.log("flows", flows);
 
-        return flows.map((flow) => {
+        return flows.map((flow, index) => {
           return (
-            <Grid item xs={12} sm={4} lg={3}>
+            <Grid
+              className={classes.gridClass}
+              key={index}
+              item
+              xs={12}
+              sm={4}
+              lg={3}
+            >
               <FlowItem
+                closeEdit={editFlowDialogClose}
+                callClose={openEditFlowDialog}
+                editFlow={(flowName, flowDescription, flowData) =>
+                  editFlow(flowName, flowDescription, flowData)
+                }
                 flow={flow}
                 onDelete={(flowId, flowName) =>
                   handleDeleteFlow(flowId, flowName)
@@ -119,7 +194,7 @@ export default function (props) {
   };
 
   const deleteConfirmationDialogConfirm = async () => {
-    const flowInfo = await fetch("/laravel/delete-flow", {
+    const flowInfo = await fetch("/laravel/flows/delete-flow", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

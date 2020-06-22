@@ -12,7 +12,6 @@ export const fetchUser = async () => {
   }
   const res = await fetch("/api/me");
   userState = res.ok ? await res.json() : null;
-  console.log(userState);
   if (userState != null && userInfo == null) {
     userInfo = await fetch("/api/adduser", {
       method: "POST",
@@ -23,7 +22,6 @@ export const fetchUser = async () => {
         email: userState.email,
       }),
     });
-    //console.log(userInfo);
   }
   return userState;
 };
@@ -47,7 +45,6 @@ export const useFetchUser = () => {
   });
 
   React.useEffect(() => {
-    console.log(userState, " user state");
     if (userState !== undefined) {
       return;
     }

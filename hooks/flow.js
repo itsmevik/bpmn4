@@ -6,7 +6,7 @@ let flows;
 let flow;
 
 const fetchFlows = async (projectId, user) => {
-  const res = await fetch("/laravel/get-flows", {
+  const res = await fetch("/laravel/flows/get-flows", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -16,14 +16,12 @@ const fetchFlows = async (projectId, user) => {
       user_sub: user.sub,
     }),
   });
-  console.log("flows", res);
-
   flows = res.ok ? await res.json() : null;
   return flows;
 };
 
 const fetchFlow = async (user, flowId) => {
-  const res = await fetch("/laravel/get-flow", {
+  const res = await fetch("/laravel/flows/get-flow", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -33,10 +31,8 @@ const fetchFlow = async (user, flowId) => {
       f_id: flowId,
     }),
   });
-  //console.log("fetchflow", res);
 
   flow = res.ok ? await res.json() : null;
-  console.log("response", flow.response.flow_file);
 
   return flow;
 };
@@ -47,19 +43,16 @@ export const useFetchFlows = (projectId, user) => {
     flowsLoading: true,
   });
   useEffect(() => {
-    console.log(user, projectId);
     if (!projectId || !user) {
       return;
     }
     let isMounted = true;
     fetchFlows(projectId, user).then((flowData) => {
       if (isMounted) {
-        console.log("flowData");
         if (flowData && flowData.message == "User Company does't have flows") {
           setFlows({ flowsFromAPI: [], flowsLoading: false });
         } else {
           setFlows({ flowsFromAPI: flowData.response, flowsLoading: false });
-          console.log("flows", flowData);
         }
       }
     });
@@ -79,8 +72,6 @@ export const useFetchFlow = (user, flowId) => {
     let isMounted = true;
     fetchFlow(user, flowId).then((flowData) => {
       if (isMounted) {
-        console.log(flowData);
-
         if (flowData.response) {
           setFlow({
             flowFromAPI: flowData.response,

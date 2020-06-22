@@ -10,7 +10,14 @@ import { useFetchCompanies } from "../../hooks/company";
 import CompanyItem from "../../components/company-item";
 import Router from "next/router";
 import DeleteConfirmation from "../../components/dialogs/delete-confirmation";
+import { makeStyles } from "@material-ui/styles";
+import EditCompany from "../../components/dialogs/edit-company";
 
+const useStyles = makeStyles((theme) => ({
+  gridClass: {
+    position: "relative",
+  },
+}));
 function Dashboard(props) {
   const { user, userLoading } = useFetchUser();
   const { companiesFromAPI, companiesLoading } = useFetchCompanies(user);
@@ -28,7 +35,7 @@ function Dashboard(props) {
   const [newCompanyDialogOpened, setNewCompanyDialogOpened] = useState(false);
   const [companyIdToDelete, setCompanyIdToDelete] = useState("");
   const [companyNameToDelete, setCompanyNameToDelete] = useState("");
-
+  const [editCompanyDialogClose, setEditCompanyDialogClose] = useState(false);
   const handleCreateCompanyButtonClick = () => {
     setNewCompanyDialogOpened(true);
   };
@@ -86,13 +93,79 @@ function Dashboard(props) {
       closeNewCompanyDialog();
     }
   };
+
+  const editCompany = async (name, description, companyData) => {
+    console.log(companyData);
+
+    const companyInfo = await fetch("/laravel/companies/update-company", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        company_id: companyData.c_id,
+        name: name,
+        description: description,
+        user_sub: user.sub,
+      }),
+    });
+    if (companyInfo.ok && name != companyData.name) {
+      var newCompanyInfo = await companyInfo.json();
+      console.log(newCompanyInfo, companies);
+
+      if (companies) {
+        let ind = companies.findIndex(
+          (element) => element.c_id == companyData.c_id
+        );
+        let updatedCompanies = companies.filter(
+          (item) => item.c_id != companyData.c_id
+        );
+        updatedCompanies.splice(ind, 0, newCompanyInfo.edit_company[0]);
+        console.log(updatedCompanies, companies);
+        setCompanies(updatedCompanies);
+        closeEditCompanyDialog();
+      }
+    } else if (description != companyData.description) {
+      var newCompanyInfo = await companyInfo.json();
+      if (companies) {
+        let index = companies.findIndex(
+          (element) => element.c_id == companyData.c_id
+        );
+        const filteredItems = companies.filter(
+          (item) => item.c_id !== companyData.c_id
+        );
+        filteredItems.splice(index, 0, newCompanyInfo[0]);
+        var updatedCompanies = filteredItems;
+        setCompanies(updatedCompanies);
+        closeEditCompanyDialog();
+      }
+    } else {
+      closeEditCompanyDialog();
+    }
+  };
+
+  const closeEditCompanyDialog = () => {
+    // setNewCompanyDialogOpened(true);
+    setEditCompanyDialogClose(true);
+  };
+  const openEditCompanyDialog = () => {
+    //setNewCompanyDialogOpened(false);
+    setEditCompanyDialogClose(false);
+  };
+
   const getCompaniesList = (companies, companiesLoading) => {
+    const classes = useStyles();
     if (!companiesLoading) {
       if (companies) {
         return companies.map((company) => {
           return (
-            <Grid item xs={12} sm={4} lg={3}>
+            <Grid className={classes.gridClass} item xs={12} sm={4} lg={3}>
               <CompanyItem
+                closeEdit={editCompanyDialogClose}
+                callClose={openEditCompanyDialog}
+                editCompany={(companyName, companyDescription, companyData) =>
+                  editCompany(companyName, companyDescription, companyData)
+                }
                 company={company}
                 onDelete={(companyId, companyName) =>
                   handleDeleteCompany(companyId, companyName)

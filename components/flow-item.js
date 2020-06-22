@@ -2,6 +2,12 @@ import { Card, Typography, CardContent, Box } from "@material-ui/core";
 import FolderOutlinedIcon from "@material-ui/icons/FolderOutlined";
 import { makeStyles } from "@material-ui/styles";
 import FlowItemMenu from "./flow-item-menu";
+import EditFlow from "./dialogs/edit-flow";
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/router";
+import { useFetchUser } from "../hooks/user";
+import { route } from "next/dist/next-server/server/router";
+import { useFetchFlows } from "../hooks/flow";
 
 const useStyles = makeStyles((theme) => ({
   cardHeaderText: {
@@ -13,6 +19,7 @@ const useStyles = makeStyles((theme) => ({
   cardBox: {
     padding: "13px 29px",
     height: 170,
+    cursor: "pointer",
   },
   cardBoxHeader: {
     display: "flex",
@@ -41,30 +48,68 @@ const useStyles = makeStyles((theme) => ({
 
 export default function FlowItem(props) {
   const classes = useStyles();
+  const { user, userLoading } = useFetchUser();
+  const router = useRouter();
+  const { flowid } = router.query;
+  const { flowsFromAPI, flowsLoading } = useFetchFlows(user, flowid);
+  const [flows, setFlows] = useState(flowsFromAPI);
+
+  useEffect(() => {
+    setFlows(flowsFromAPI);
+  }, [flowsFromAPI]);
+  useEffect(() => {
+    if (props.closeEdit) {
+      setEditFlowDialogOpened(false);
+    }
+  });
+  const [editFlowDialogOpened, setEditFlowDialogOpened] = useState(false);
+  const handleEditFlowButtonClick = () => {
+    props.callClose();
+    setEditFlowDialogOpened(true);
+  };
+  const closeEditFlowDialog = () => {
+    setEditFlowDialogOpened(false);
+  };
   return (
-    <Card className={classes.cardBox}>
-      <div className={classes.cardBoxHeader}>
-        <Typography
-          className={classes.cardHeaderText}
-          color="textSecondary"
-          gutterBottom
-        >
-          <FolderOutlinedIcon className={classes.cardIcon} />
-          <span className={classes.cardBoxHeadeText}>Flow</span>
-        </Typography>
-        <FlowItemMenu
-          onEdit={() => props.onEdit(props.flow.f_id)}
-          onDelete={() => props.onDelete(props.flow.f_id, props.flow.name)}
-        ></FlowItemMenu>
-      </div>
-      <CardContent className={classes.cardContent}>
-        <Typography component="h6" variant="h6" color="primary">
-          <Box className="clip-txt">{props.flow.name}</Box>
-        </Typography>
-        <Typography variant="caption" color="textSecondary">
-          <Box className="clip-txt">{props.flow.description}</Box>
-        </Typography>
-      </CardContent>
-    </Card>
+    <>
+      <EditFlow
+        open={editFlowDialogOpened}
+        onCancel={closeEditFlowDialog}
+        onSubmit={(flowName, flowDescription) =>
+          props.editFlow(flowName, flowDescription, props.flow)
+        }
+        flowData={props.flow}
+      ></EditFlow>
+      <FlowItemMenu
+        // onEdit={() => props.onEdit(props.flow.f_id)}
+        onEdit={handleEditFlowButtonClick}
+        onDelete={() => props.onDelete(props.flow.f_id, props.flow.name)}
+      ></FlowItemMenu>
+      <Card
+        className={classes.cardBox}
+        onClick={() => props.onEdit(props.flow.f_id)}
+      >
+        <div className={classes.cardBoxHeader}>
+          <Typography
+            className={classes.cardHeaderText}
+            color="textSecondary"
+            gutterBottom
+          >
+            <FolderOutlinedIcon className={classes.cardIcon} />
+            <span className={classes.cardBoxHeadeText}>Flow</span>
+          </Typography>
+        </div>
+        <CardContent className={classes.cardContent}>
+          <Typography component="h6" variant="h6" color="primary">
+            <Box className="clip-txt">{props.flow ? props.flow.name : ""}</Box>
+          </Typography>
+          <Typography variant="caption" color="textSecondary">
+            <Box className="clip-txt">
+              {props.flow ? props.flow.description : ""}
+            </Box>
+          </Typography>
+        </CardContent>
+      </Card>
+    </>
   );
 }

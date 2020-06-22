@@ -7,8 +7,18 @@ import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import GetAppIcon from "@material-ui/icons/GetApp";
 // import FilterNoneIcon from '@material-ui/icons/FilterNone';
+import { makeStyles } from "@material-ui/styles";
+
 import LibraryAddIcon from "@material-ui/icons/LibraryAdd";
 
+const useStyles = makeStyles((theme) => ({
+  iconButtons: {
+    position: "absolute",
+    right: 20,
+    top: 15,
+    zIndex: 1,
+  },
+}));
 export default function FlowItemMenu(props) {
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -28,8 +38,10 @@ export default function FlowItemMenu(props) {
     props.onDelete();
   };
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const classes = useStyles();
+
   return (
-    <div>
+    <div className={classes.iconButtons}>
       <IconButton
         aria-label="more"
         aria-controls="long-menu"

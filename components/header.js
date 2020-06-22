@@ -134,7 +134,6 @@ export default function Header(props) {
                         </MenuList>
                       </ClickAwayListener>
                     </Paper>
-                    }
                   </Popper>
                 </div>
               </div>

@@ -64,7 +64,7 @@ const CreateFlow = (props) => {
           Cancel
         </Button>
         <Button
-          variant="container"
+          variant="contained"
           color="primary"
           className="button"
           onClick={() => props.onSubmit(flowName, flowDescription)}

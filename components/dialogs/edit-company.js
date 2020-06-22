@@ -9,47 +9,53 @@ import {
 } from "@material-ui/core";
 import { useState } from "react";
 
-const CreateProject = (props) => {
-  const [projectName, setProjectName] = useState("");
-  const [projectDescription, setProjectDescription] = useState("");
-  const projectNameChangeHandler = (e) => {
-    setProjectName(e.target.value);
+const EditCompany = (props) => {
+  const [companyName, setCompanyName] = useState(
+    props.companyData ? props.companyData.name : ""
+  );
+  const [companyDescription, setCompanyDescription] = useState(
+    props.companyData ? props.companyData.description : ""
+  );
+  const companyNameChangeHandler = (e) => {
+    setCompanyName(e.target.value);
   };
-  const projectDescriptionChangeHandler = (e) => {
-    setProjectDescription(e.target.value);
+  const companyDescriptionChangeHandler = (e) => {
+    setCompanyDescription(e.target.value);
   };
+  let companyDetails = props.companyData ? props.companyData : "";
+
   return (
     <Dialog open={props.open}>
       <DialogContent className="dialog-content">
         <div>
-          <Box>New Project</Box>
-          <FormControl fullWidth={"true"}>
+          <Box>Edit Company</Box>
+          <FormControl fullWidth="true">
             <TextField
               variant="outlined"
               margin="normal"
               required
-              fullWidth={"true"}
+              fullWidth="true"
               label="Project Name"
               InputLabelProps={{
                 shrink: true,
               }}
-              placeholder="Enter project name"
-              value={projectName}
-              onChange={projectNameChangeHandler}
+              placeholder="Enter company name"
+              value={companyName}
+              onChange={companyNameChangeHandler}
               autoFocus
             ></TextField>
             <TextField
               variant="outlined"
               margin="normal"
               required
-              fullwidth
+              fullWidth="true"
               label="Description"
               InputLabelProps={{
                 shrink: true,
               }}
-              placeholder="Enter project description"
-              value={projectDescription}
-              onChange={projectDescriptionChangeHandler}
+              placeholder="Enter company description"
+              value={companyDescription}
+              onChange={companyDescriptionChangeHandler}
               multiline
             ></TextField>
           </FormControl>
@@ -67,13 +73,13 @@ const CreateProject = (props) => {
           variant="contained"
           color="primary"
           className="button"
-          onClick={() => props.onSubmit(projectName, projectDescription)}
+          onClick={() => props.onSubmit(companyName, companyDescription)}
         >
-          Create
+          Update
         </Button>
       </DialogActions>
     </Dialog>
   );
 };
 
-export default CreateProject;
+export default EditCompany;

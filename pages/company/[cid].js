@@ -11,6 +11,15 @@ import CreateProject from "../../components/dialogs/create-project";
 import fetch from "isomorphic-fetch";
 import DeleteConfirmation from "../../components/dialogs/delete-confirmation";
 import Router from "next/router";
+import { makeStyles } from "@material-ui/styles";
+import EditProject from "../../components/dialogs/edit-project";
+
+const useStyles = makeStyles((theme) => ({
+  gridClass: {
+    position: "relative",
+  },
+}));
+
 export default function (props) {
   const { user, userLoading } = useFetchUser();
   const router = useRouter();
@@ -21,6 +30,7 @@ export default function (props) {
   const [createProjectDialogOpened, setCreateProjectDialogOpened] = useState(
     false
   );
+  const [editProjectDialogClose, setEditProjectDialogClose] = useState(false);
   const [projectIdToDelete, setProjectIdToDelete] = useState("");
   const [projectNameToDelete, setProjectNameToDelete] = useState("");
   const [
@@ -75,13 +85,78 @@ export default function (props) {
     }
   };
 
+  const editProject = async (name, description, projectData) => {
+    const projectInfo = await fetch("/laravel/projects/update-project", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        user_sub: user.sub,
+        project_id: projectData.p_id,
+        name: name,
+        description: description,
+      }),
+    });
+    if (projectInfo.ok && name != projectData.name) {
+      var newProjectInfo = await projectInfo.json();
+      if (projects) {
+        let index = projects.findIndex(
+          (element) => element.p_id == projectData.p_id
+        );
+        const filteredItems = projects.filter(
+          (item) => item.p_id !== projectData.p_id
+        );
+        filteredItems.splice(index, 0, newProjectInfo[0]);
+        var updatedProjects = filteredItems;
+        setProjects(updatedProjects);
+        closeEditProjectDialog();
+      }
+    } else if (description != projectData.description) {
+      var newProjectInfo = await projectInfo.json();
+      if (projects) {
+        let index = projects.findIndex(
+          (element) => element.p_id == projectData.p_id
+        );
+        const filteredItems = projects.filter(
+          (item) => item.p_id !== projectData.p_id
+        );
+        filteredItems.splice(index, 0, newProjectInfo[0]);
+        var updatedProjects = filteredItems;
+        setProjects(updatedProjects);
+        closeEditProjectDialog();
+      }
+    } else {
+      closeEditProjectDialog();
+    }
+  };
+  const closeEditProjectDialog = () => {
+    setEditProjectDialogClose(true);
+  };
+  const openEditProjectDialog = () => {
+    setEditProjectDialogClose(false);
+  };
   const getProjectsList = (projects, projectsLoading) => {
+    const classes = useStyles();
     if (!projectsLoading) {
       if (projects) {
-        return projects.map((project) => {
+        return projects.map((project, index) => {
           return (
-            <Grid item xs={12} sm={4} lg={3}>
+            <Grid
+              key={index}
+              item
+              className={classes.gridClass}
+              xs={12}
+              sm={4}
+              lg={3}
+              sy={""}
+            >
               <ProjectItem
+                closeEdit={editProjectDialogClose}
+                callClose={openEditProjectDialog}
+                editProject={(projectName, projectDescription, projectData) =>
+                  editProject(projectName, projectDescription, projectData)
+                }
                 project={project}
                 onDelete={(projectId, projectName) =>
                   handleDeleteProject(projectId, projectName)

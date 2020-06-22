@@ -1,29 +1,29 @@
-import dynamic from 'next/dynamic';
-import Layout from '../components/layout';
-import { Drawer, makeStyles } from '@material-ui/core';
+import dynamic from "next/dynamic";
+import Layout from "../components/layout";
+import { Drawer, makeStyles } from "@material-ui/core";
 //import BPMNContainer from '../components/bpmn/bpmn-container';
-import { drawerWidth } from '../constants';
-import { minHeight } from '@material-ui/system';
-import { useFetchUser } from '../hooks/user';
+import { drawerWidth } from "../constants";
+import { minHeight } from "@material-ui/system";
+import { useFetchUser } from "../hooks/user";
 const BPMNContainer = dynamic(
-  () => import('../components/bpmn/bpmn-container'),
+  () => import("../components/bpmn/bpmn-container"),
   { ssr: false }
 );
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
-    display: 'flex'
+    display: "flex",
   },
   drawer: {
     width: drawerWidth,
-    flexShrink: 0
+    flexShrink: 0,
   },
   drawerPaper: {
-    width: drawerWidth
-  }
+    width: drawerWidth,
+  },
 }));
 
-export default function() {
+export default function () {
   const classes = useStyles();
   const { user, userLoading } = useFetchUser();
   return (

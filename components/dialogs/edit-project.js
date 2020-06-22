@@ -9,26 +9,32 @@ import {
 } from "@material-ui/core";
 import { useState } from "react";
 
-const CreateProject = (props) => {
-  const [projectName, setProjectName] = useState("");
-  const [projectDescription, setProjectDescription] = useState("");
+const EditProject = (props) => {
+  const [projectName, setProjectName] = useState(
+    props.projectData ? props.projectData.name : ""
+  );
+  const [projectDescription, setProjectDescription] = useState(
+    props.projectData ? props.projectData.description : ""
+  );
   const projectNameChangeHandler = (e) => {
     setProjectName(e.target.value);
   };
   const projectDescriptionChangeHandler = (e) => {
     setProjectDescription(e.target.value);
   };
+  let projectDetails = props.projectData ? props.projectData : "";
+
   return (
     <Dialog open={props.open}>
       <DialogContent className="dialog-content">
         <div>
-          <Box>New Project</Box>
-          <FormControl fullWidth={"true"}>
+          <Box>Edit Project</Box>
+          <FormControl fullWidth="true">
             <TextField
               variant="outlined"
               margin="normal"
               required
-              fullWidth={"true"}
+              fullWidth="true"
               label="Project Name"
               InputLabelProps={{
                 shrink: true,
@@ -42,7 +48,7 @@ const CreateProject = (props) => {
               variant="outlined"
               margin="normal"
               required
-              fullwidth
+              fullWidth="true"
               label="Description"
               InputLabelProps={{
                 shrink: true,
@@ -69,11 +75,11 @@ const CreateProject = (props) => {
           className="button"
           onClick={() => props.onSubmit(projectName, projectDescription)}
         >
-          Create
+          Update
         </Button>
       </DialogActions>
     </Dialog>
   );
 };
 
-export default CreateProject;
+export default EditProject;

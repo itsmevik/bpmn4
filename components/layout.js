@@ -1,8 +1,8 @@
-import Header from './header';
-import { Container, Typography } from '@material-ui/core';
-import auth0 from '../utils/auth0';
-import { UserProvider, useFetchUser } from '../hooks/user';
-import Router from 'next/router';
+import Header from "./header";
+import { Container, Typography } from "@material-ui/core";
+import auth0 from "../utils/auth0";
+import { UserProvider, useFetchUser } from "../hooks/user";
+import Router from "next/router";
 
 const Layout = ({
   gated = false,
@@ -12,12 +12,11 @@ const Layout = ({
   userLoading,
   ...props
 }) => {
-  console.log(props);
   if (gated) {
     if (!userLoading && !user) {
-      if (typeof window === 'undefined') {
+      if (typeof window === "undefined") {
       } else {
-        Router.push('/');
+        Router.push("/");
       }
     }
   }

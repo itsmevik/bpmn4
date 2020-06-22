@@ -9,47 +9,53 @@ import {
 } from "@material-ui/core";
 import { useState } from "react";
 
-const CreateProject = (props) => {
-  const [projectName, setProjectName] = useState("");
-  const [projectDescription, setProjectDescription] = useState("");
-  const projectNameChangeHandler = (e) => {
-    setProjectName(e.target.value);
+const EditFlow = (props) => {
+  const [flowName, setFlowName] = useState(
+    props.flowData ? props.flowData.name : ""
+  );
+  const [flowDescription, setFlowDescription] = useState(
+    props.flowData ? props.flowData.description : ""
+  );
+  const flowNameChangeHandler = (e) => {
+    setFlowName(e.target.value);
   };
-  const projectDescriptionChangeHandler = (e) => {
-    setProjectDescription(e.target.value);
+  const flowDescriptionChangeHandler = (e) => {
+    setFlowDescription(e.target.value);
   };
+  //let flowDetails = props.companyData ? props.companyData : "";
+
   return (
     <Dialog open={props.open}>
       <DialogContent className="dialog-content">
         <div>
-          <Box>New Project</Box>
-          <FormControl fullWidth={"true"}>
+          <Box>Edit Flow</Box>
+          <FormControl fullWidth="true">
             <TextField
               variant="outlined"
               margin="normal"
               required
-              fullWidth={"true"}
-              label="Project Name"
+              fullWidth="true"
+              label="Flow Name"
               InputLabelProps={{
                 shrink: true,
               }}
-              placeholder="Enter project name"
-              value={projectName}
-              onChange={projectNameChangeHandler}
+              placeholder="Enter flow name"
+              value={flowName}
+              onChange={flowNameChangeHandler}
               autoFocus
             ></TextField>
             <TextField
               variant="outlined"
               margin="normal"
               required
-              fullwidth
+              fullWidth="true"
               label="Description"
               InputLabelProps={{
                 shrink: true,
               }}
-              placeholder="Enter project description"
-              value={projectDescription}
-              onChange={projectDescriptionChangeHandler}
+              placeholder="Enter flow description"
+              value={flowDescription}
+              onChange={flowDescriptionChangeHandler}
               multiline
             ></TextField>
           </FormControl>
@@ -67,13 +73,13 @@ const CreateProject = (props) => {
           variant="contained"
           color="primary"
           className="button"
-          onClick={() => props.onSubmit(projectName, projectDescription)}
+          onClick={() => props.onSubmit(flowName, flowDescription)}
         >
-          Create
+          Update
         </Button>
       </DialogActions>
     </Dialog>
   );
 };
 
-export default CreateProject;
+export default EditFlow;
