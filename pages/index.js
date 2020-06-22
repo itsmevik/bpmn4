@@ -1,14 +1,23 @@
-import Layout from '../components/layout';
-import { Paper, Button, Card } from '@material-ui/core';
-import Link from 'next/link';
-import { useFetchUser } from '../hooks/user';
+import Layout from "../components/layout";
+import { Paper, Button, Card } from "@material-ui/core";
+import Link from "next/link";
+import { useFetchUser } from "../hooks/user";
+import Router from "next/router";
+import React, { useEffect } from "react";
 
-export default function() {
+export default function () {
   const { user, userLoading } = useFetchUser();
+
+  useEffect(() => {
+    if (user && !userLoading) {
+      Router.push("/dashboard");
+    }
+  }, [user]);
+
   return (
     <React.Fragment>
       <Layout user={user} userLoading={userLoading}>
-        {user && (
+        {/* {user && (
           <div className="button-container-wrapper">
             <div className="button-container">
               <Link href="/dashboard">
@@ -18,9 +27,9 @@ export default function() {
               </Link>
             </div>
           </div>
-        )}
+        )} */}
       </Layout>
-      <style>{`
+      {/* <style>{`
         .button-container-wrapper{
             display:flex;
             justify-content:center;
@@ -38,7 +47,7 @@ export default function() {
         p {
           color: blue;
         }
-      `}</style>
+      `}</style> */}
     </React.Fragment>
   );
 }
