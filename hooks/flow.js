@@ -4,7 +4,7 @@ import fetch from "isomorphic-fetch";
 
 let flows;
 let flow;
-
+let publicFlow;
 const fetchFlows = async (projectId, user) => {
   const res = await fetch("/laravel/flows/get-flows", {
     method: "POST",
@@ -36,6 +36,23 @@ const fetchFlow = async (user, flowId) => {
 
   return flow;
 };
+
+// const fetchPublicFlow = async (flowId) => {
+//   const res = await fetch("/laravel/flow/publish", {
+//     method: "POST",
+//     headers: {
+//       "Content-Type": "application/json",
+//     },
+//     body: JSON.stringify({
+//       f_id: flowId,
+//     }),
+//   });
+
+//   publicFlow = res.ok ? await res.json() : null;
+//   //console.log(flow);
+
+//   return publicFlow;
+// };
 
 export const useFetchFlows = (projectId, user) => {
   const [data, setFlows] = useState({
@@ -91,3 +108,38 @@ export const useFetchFlow = (user, flowId) => {
   }, [user]);
   return data;
 };
+
+// export const useFetchPublicFlow = (flowId) => {
+//   const [data, setFlow] = React.useState({
+//     publicFlowFromAPI: publicFlow || null,
+//     publicFlowLoading: publicFlow == undefined,
+//   });
+//   React.useEffect(() => {
+//     if (publicFlow !== undefined) {
+//       return;
+//     }
+//     let isMounted = true;
+//     fetchPublicFlow(flowId).then((flowData) => {
+//       if (isMounted) {
+//         // console.log(flowData);
+//         console.log(flowData.response);
+
+//         if (flowData.response) {
+//           setFlow({
+//             publicFlowFromAPI: flowData.response,
+//             publicFlowLoading: false,
+//           });
+//         } else {
+//           setFlow({
+//             publicFlowFromAPI: null,
+//             publicFlowLoading: false,
+//           });
+//         }
+//       }
+//     });
+//     return () => {
+//       isMounted = false;
+//     };
+//   }, [flowId]);
+//   return data;
+// };

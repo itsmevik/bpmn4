@@ -1,11 +1,16 @@
 import { Fragment, useState, useEffect } from "react";
 import Layout from "../../components/layout";
 import { Grid, Typography, Button } from "@material-ui/core";
+import Breadcrumbs from "@material-ui/core/Breadcrumbs";
+import Link from "@material-ui/core/Link";
 import FlowItem from "../../components/flow-item";
 import { useRouter } from "next/router";
 import { useFetchUser } from "../../hooks/user";
 import { useFetchFlows } from "../../hooks/flow";
 // import { useFetchProjects } from "../../hooks/project";
+import { useFetchProject } from "../../hooks/project";
+import { useFetchCompany } from "../../hooks/company";
+
 import AddIcon from "@material-ui/icons/Add";
 import CreateFlow from "../../components/dialogs/create-flow";
 import fetch from "isomorphic-fetch";
@@ -24,14 +29,19 @@ const useStyles = makeStyles((theme) => ({
 export default function (props) {
   const { user, userLoading } = useFetchUser();
   const router = useRouter();
-  const { projectid } = router.query;
+  const { projectid, cid } = router.query;
   const { flowsFromAPI, flowsLoading } = useFetchFlows(projectid, user);
   const [flows, setFlows] = useState(flowsFromAPI);
 
+  const { projectFromAPI, projectLoading } = useFetchProject(user, projectid);
+  const { companyFromAPI, companyLoading } = useFetchCompany(user, cid);
   // const { projectsFromAPI, projectsLoading } = useFetchProjects(
   //   user,
   //   projectid
   // );
+  console.log(projectFromAPI);
+
+  //console.log(companyFromAPI, cid);
   const [editFlowDialogClose, setEditFlowDialogClose] = useState(false);
 
   const [createFlowDialogOpened, setCreateFlowDialogOpened] = useState(false);
@@ -61,6 +71,13 @@ export default function (props) {
 
   const handleEditFlow = (flowId) => {
     Router.push(`/flow/${flowId}`);
+  };
+
+  const companyClick = () => {
+    Router.push(`/company/${projectFromAPI.company_id}`);
+  };
+  const projectClick = () => {
+    Router.push(`/project/${projectid}`);
   };
 
   const closeCreateFlowDialog = () => {
@@ -216,18 +233,29 @@ export default function (props) {
   return (
     <Fragment>
       <Layout gated={true} user={user} userLoading={userLoading}>
-        {/* <Grid container>
+        <Breadcrumbs aria-label="breadcrumb">
+          <Link color="inherit" href="/dashboard">
+            Home
+          </Link>
+          <Link color="inherit" href="" onClick={companyClick}>
+            {projectFromAPI ? projectFromAPI.company_name : ""}
+          </Link>
+          <Link color="textPrimary" href="" onClick={projectClick}>
+            {projectFromAPI ? projectFromAPI.name : ""}
+          </Link>
+        </Breadcrumbs>
+        <Grid container>
           <Grid item xs={12}>
             <div className="main-title">
-              <Typography variant="h3">
-                {flowsFromAPI ? flowsFromAPI.name : ""}
+              <Typography variant="h4">
+                {projectFromAPI ? projectFromAPI.name : ""}
               </Typography>
               <Typography>
-                {flowsFromAPI ? flowsFromAPI.description : ""}
+                {projectFromAPI ? projectFromAPI.description : ""}
               </Typography>
             </div>
           </Grid>
-        </Grid> */}
+        </Grid>
         <div>
           <Grid container spacing={2}>
             <Grid item xs={12}>
