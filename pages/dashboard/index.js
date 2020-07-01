@@ -20,6 +20,17 @@ const useStyles = makeStyles((theme) => ({
 }));
 function Dashboard(props) {
   const { user, userLoading } = useFetchUser();
+  useEffect(() => {
+    console.log("login&&&&&&");
+    console.log(user, userLoading);
+
+    if (!user && !userLoading) {
+      console.log("login");
+
+      Router.push("/api/login");
+    }
+  }, [userLoading]);
+
   const { companiesFromAPI, companiesLoading } = useFetchCompanies(user);
 
   const [companies, setCompanies] = useState(companiesFromAPI);
@@ -179,6 +190,9 @@ function Dashboard(props) {
       return <div>You don't have any companies</div>;
     }
   };
+  // if (!user || userLoading) {
+  //   return "";
+  // }
   return (
     <Fragment>
       <Layout gated={true} user={user} userLoading={userLoading}>

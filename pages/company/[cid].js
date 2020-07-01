@@ -1,6 +1,8 @@
 import { Fragment, useState, useEffect } from "react";
 import Layout from "../../components/layout";
 import { Grid, Typography, Button } from "@material-ui/core";
+import Breadcrumbs from "@material-ui/core/Breadcrumbs";
+import Link from "@material-ui/core/Link";
 import ProjectItem from "../../components/project-item";
 import { useRouter } from "next/router";
 import { useFetchUser } from "../../hooks/user";
@@ -44,6 +46,9 @@ export default function (props) {
   if (companyFromAPI == null && !companyLoading) {
     router.push("/dashboard");
   }
+  const companyClick = () => {
+    Router.push(`/company/${cid}`);
+  };
 
   const handleCreateProjectButtonClick = () => {
     setCreateProjectDialogOpened(true);
@@ -197,6 +202,14 @@ export default function (props) {
   return (
     <Fragment>
       <Layout gated={true} user={user} userLoading={userLoading}>
+        <Breadcrumbs aria-label="breadcrumb">
+          <Link color="inherit" href="/dashboard">
+            HOME
+          </Link>
+          <Link color="textPrimary" href="" onClick={companyClick}>
+            {companyFromAPI ? companyFromAPI.name : ""}
+          </Link>
+        </Breadcrumbs>
         <Grid container>
           <Grid item xs={12}>
             <div className="main-title">

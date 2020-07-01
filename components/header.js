@@ -139,11 +139,11 @@ export default function Header(props) {
               </div>
             </span>
           )}
-          {!user && (
+          {/* {!user && (
             <Link href="/api/login" className={classes.loginLink}>
               Login
             </Link>
-          )}
+          )} */}
         </Toolbar>
       </AppBar>
     </div>

@@ -1,0 +1,282 @@
+.site-header {
+  .header-inner {
+    width: calc(100% - 4vw);
+    height: 65px;
+    padding: 0;
+    position: absolute;
+    top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    will-change: transform;
+    @include media-breakpoint-down(sm) {
+      width: calc(100% - 30px);
+    }
+    .logo {
+      float: left;
+      position: fixed;
+      z-index: 2;
+      left: 2vw;
+      top: 10px;
+      width: 65px;
+      height: 65px;
+      background: $logo-bg;
+      color: $white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: $font-weight-bold;
+      @include border-radius(50%);
+      @include media-breakpoint-down(sm) {
+        left: $grid-gutter-width * 0.5;
+      }
+      &:hover {
+        text-decoration: none;
+      }
+    }
+    .toggle-menu {
+      float: right;
+      cursor: pointer;
+      position: fixed;
+      top: 33px;
+      right: 2vw;
+      z-index: 5;
+      @include media-breakpoint-down(sm) {
+        right: 15px;
+      }
+      span {
+        width: $grid-gutter-width;
+        height: 2px;
+        background: $black;
+        display: block;
+        margin-bottom: 4px;
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+    &.bg-header {
+      top: 0;
+      width: 100%;
+      height: 85px;
+      background: transparent;
+      z-index: 2;
+      position: fixed;
+    }
+    &.header-small {
+      background: $white;
+    }
+  }
+  .head-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    flex-direction: column;
+    color: $white;
+    text-align: center;
+    p {
+      margin-bottom: $grid-gutter-width;
+      @include media-breakpoint-down(sm) {
+        margin-bottom: $grid-gutter-width * 0.5;
+      }
+    }
+    h1 {
+      text-transform: uppercase;
+    }
+  }
+  &.header-bg {
+    padding: 0px 2vw;
+    background: url("../../1/images/bg.png") no-repeat center center;
+    background-size: cover;
+    min-height: 100vh;
+    @include media-breakpoint-down(sm) {
+      padding: 0 $grid-gutter-width * 0.5;
+    }
+    .header-inner.header-small {
+      background: transparent;
+    }
+  }
+}
+
+/* 
+
+Sidemenu css start here 
+
+*/
+
+.side-menu {
+  width: 40vw;
+  height: 100vh;
+  background-color: $white;
+  overflow: hidden;
+  overflow-y: scroll;
+  position: fixed;
+  right: -40vw;
+  margin-right: -1px;
+  top: 0;
+  z-index: 2;
+  padding-top: $grid-gutter-width * 0.5;
+  @include transition(right 0.5s ease);
+  @include media-breakpoint-down(md) {
+    width: 60vw;
+    right: -60vw;
+    margin-right: 0;
+  }
+  @media (max-width: 560px) {
+    width: 100vw;
+    right: -100vw;
+  }
+  &.open {
+    right: 0px;
+    padding-top: $grid-gutter-width * 0.5;
+    .close-icon {
+      float: right;
+      cursor: pointer;
+      position: fixed;
+      top: $grid-gutter-width;
+      right: 3vw;
+      z-index: 5;
+      width: 25px;
+      height: 25px;
+      display: block;
+      @include media-breakpoint-down(md) {
+        right: $grid-gutter-width;
+        margin-top: 0px;
+      }
+      span {
+        width: $grid-gutter-width;
+        height: 2px;
+        background: $black;
+        display: block;
+        margin-bottom: 4px;
+        &:last-child {
+          margin-bottom: 0;
+        }
+        margin-top: 5px;
+        @include transition(all 0.35s ease);
+        &:nth-child(1) {
+          position: relative;
+          top: 6px;
+          @include transform(rotate(-40deg));
+        }
+        &:nth-child(3) {
+          @include transform(rotate(40deg));
+        }
+        &:nth-child(2) {
+          display: none;
+        }
+      }
+    }
+  }
+  .menu-block {
+    padding: 23px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    @include media-breakpoint-down(sm) {
+      padding: $grid-gutter-width * 0.5 $size-20;
+    }
+    ul {
+      padding: 0;
+      margin: 0;
+      list-style: none;
+      display: flex;
+      li {
+        float: left;
+        margin-right: 10px;
+        &:last-child {
+          margin-right: 0;
+        }
+        a {
+          color: $black;
+          font-size: $font-size-base;
+          font-weight: $font-weight-light;
+          letter-spacing: 0.04em;
+          text-transform: uppercase;
+          &:hover {
+            text-decoration: none;
+            color: $menu-hover;
+          }
+        }
+      }
+    }
+  }
+  .posts-block-main {
+    margin-top: 6vw;
+    @include media-breakpoint-down(sm) {
+      margin-top: 15vw;
+    }
+    .post-block {
+      display: flex;
+      align-items: center;
+      padding: $size-20;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+      @include media-breakpoint-down(sm) {
+        padding: $grid-gutter-width * 0.5;
+      }
+      .post-block-img {
+        float: left;
+        width: 10vw;
+        @include media-breakpoint-down(sm) {
+          width: 15vw;
+        }
+      }
+      .post-block-text {
+        padding-left: 2vw;
+        text-align: center;
+        @include media-breakpoint-down(sm) {
+          padding-left: 5vw;
+        }
+        span {
+          font-size: 12px;
+          text-transform: uppercase;
+        }
+        h5 {
+          font-family: $font-family-base;
+          font-weight: $font-weight-light;
+          margin-top: 0.5rem;
+        }
+        p {
+          font-size: 11px;
+          i {
+            margin-right: 5px;
+          }
+        }
+      }
+    }
+  }
+}
+.subscribe-block {
+  text-align: center;
+  margin-top: 3vw;
+  margin-bottom: 3vw;
+  @include media-breakpoint-down(sm) {
+    margin-top: 6vw;
+  }
+}
+.banner {
+  height: 100vh;
+  overflow: hidden;
+  @include media-breakpoint-down(sm) {
+    height: auto;
+  }
+  .head-text {
+    bottom: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    @include media-breakpoint-down(sm) {
+      height: auto;
+    }
+  }
+  .carousel-item {
+    img {
+      width: 100%;
+      height: 100vh;
+      object-fit: cover;
+    }
+  }
+}

@@ -1,0 +1,12 @@
+footer.site-footer {
+  background: $black;
+  padding: $grid-gutter-width $grid-gutter-width * 0.5;
+  color: $white;
+  font-size: $font-size-small;
+  p {
+    margin: 0;
+  }
+}
+.parallax-block + .site-footer {
+  margin-top: 0;
+}
