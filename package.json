@@ -26,6 +26,7 @@
     "next-cookies": "^2.0.3",
     "next-transpile-modules": "^3.0.2",
     "node-sass": "^4.13.1",
+    "pm2": "^4.4.0",
     "react": "^16.13.0",
     "react-dom": "^16.13.0"
   }
