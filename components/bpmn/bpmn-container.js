@@ -7,6 +7,9 @@ export default class BPMNContainer extends React.Component {
       container: "#bpmnview",
     });
     // this.newDiagram();
+    // this.modeler.saveXML({ format: true }, function (err, xml) {
+    //   //here xml is the bpmn format
+    // });
     this.openDiagram(this.props.flow.flow_file);
   }
   // newDiagram() {

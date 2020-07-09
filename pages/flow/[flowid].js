@@ -63,6 +63,26 @@ export default function (props) {
     return publishFlow;
   };
 
+  const updateFlow = async () => {
+    var formData = new FormData();
+    var file = new File([flowFromAPI ? flowFromAPI.flow_file : ""], ".xml", {
+      type: "text/plain",
+    });
+    formData.append("f_id", flowid);
+    formData.append("name", flowFromAPI ? flowFromAPI.name : "");
+    formData.append("flow_file", file);
+    formData.append("user_sub", user.sub);
+    const flowInfo = await fetch("/laravel/flows/update-flow", {
+      method: "POST",
+      body: formData,
+    });
+
+    if (flowInfo.ok) {
+      var newFlowInfo = await flowInfo.json();
+      console.log(newFlowInfo);
+    }
+  };
+
   const classes = useStyles();
 
   const { user, userLoading } = useFetchUser();
@@ -126,9 +146,10 @@ export default function (props) {
   const closeDialogOpened = () => {
     setShareDialogOpened(false);
   };
-  // const saveBpmn = () => {
-  //   console.log("saved");
-  // };
+  const saveBpmn = () => {
+    console.log("saved");
+    updateFlow();
+  };
   const shareConfirmationDialogCancel = () => {
     setShareConfirmationDialogOpened(false);
   };
@@ -198,6 +219,14 @@ export default function (props) {
               onClick={() => handleLinkButtonClick()}
             ></LinkIcon>
           )}
+          <Button
+            variant="contained"
+            color="primary"
+            style={{ float: "right" }}
+            onClick={() => saveBpmn()}
+          >
+            Save
+          </Button>
         </div>
 
         <AlertDialogSlide
