@@ -18,6 +18,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import AlertDialogSlide from "../../components/dialogs/publish-flow";
 import ShareConfirmation from "../../components/dialogs/share-conformation";
+import SaveConfirmation from "../../components/dialogs/save-confirmation";
 
 const BPMNContainer = dynamic(
   () => import("../../components/bpmn/bpmn-container"),
@@ -65,11 +66,11 @@ export default function (props) {
 
   const updateFlow = async () => {
     var formData = new FormData();
-    var file = new File([flowFromAPI ? flowFromAPI.flow_file : ""], ".xml", {
+    var file = new File([updatedFlow], ".xml", {
       type: "text/plain",
     });
     formData.append("f_id", flowid);
-    formData.append("name", flowFromAPI ? flowFromAPI.name : "");
+    formData.append("name", flow ? flow.name : "");
     formData.append("flow_file", file);
     formData.append("user_sub", user.sub);
     const flowInfo = await fetch("/laravel/flows/update-flow", {
@@ -79,8 +80,14 @@ export default function (props) {
 
     if (flowInfo.ok) {
       var newFlowInfo = await flowInfo.json();
+      setFlow(newFlowInfo.response);
       console.log(newFlowInfo);
     }
+  };
+
+  const openSaveConfirmation = (updatedFlow) => {
+    setUpdatedFlow(updatedFlow);
+    setSaveConfirmationDialogOpened(true);
   };
 
   const classes = useStyles();
@@ -92,9 +99,11 @@ export default function (props) {
   const { flowFromAPI, flowLoading } = useFetchFlow(user, flowid);
 
   const [shareDialogOpened, setShareDialogOpened] = useState(false);
+  const [saveDialogOpened, setSaveDialogOpened] = useState(false);
   const [showLinkIcon, setShowLinkIcon] = useState(false);
 
   const [flow, setFlow] = useState(flowFromAPI);
+  const [updatedFlow, setUpdatedFlow] = useState();
   let publicFlowData = {};
 
   const [publish, setpublish] = useState(false);
@@ -103,6 +112,11 @@ export default function (props) {
   const [
     shareConfirmationDialogOpened,
     setShareConfirmationDialogOpened,
+  ] = useState(false);
+
+  const [
+    saveConfirmationDialogOpened,
+    setSaveConfirmationDialogOpened,
   ] = useState(false);
 
   useEffect(() => {
@@ -139,6 +153,10 @@ export default function (props) {
     //   setShowLinkIcon(false);
     // }
   };
+
+  const handleSaveFlowButtonClick = () => {
+    setSaveConfirmationDialogOpened(true);
+  };
   console.log(publish);
   const handleLinkButtonClick = () => {
     setShareDialogOpened(true);
@@ -146,26 +164,33 @@ export default function (props) {
   const closeDialogOpened = () => {
     setShareDialogOpened(false);
   };
-  const saveBpmn = () => {
+
+  const saveConfirmationDialogConfirm = () => {
     console.log("saved");
     updateFlow();
+    setSaveConfirmationDialogOpened(false);
   };
+
+  const saveConfirmationDialogCancel = () => {
+    console.log("cancel");
+    setSaveConfirmationDialogOpened(false);
+  };
+
   const shareConfirmationDialogCancel = () => {
     setShareConfirmationDialogOpened(false);
   };
+
   const shareConfirmationDialogConfirm = () => {
-    setShareDialogOpened(true);
-    if (title == "SHARE") {
-      // setShareDialogOpened(true);
+    if (flow.publish) {
+      setShareDialogOpened(true);
+
       fetchPublicFlow(flowid, user, 0);
 
-      setTitle("UNSHARE");
       setShowLinkIcon(true);
-    } else if (title == "UNSHARE") {
+    } else {
       fetchPublicFlow(flowid, user, 1);
       setShareDialogOpened(false);
 
-      setTitle("SHARE");
       setShowLinkIcon(false);
     }
     setShareConfirmationDialogOpened(false);
@@ -174,11 +199,11 @@ export default function (props) {
   };
 
   const companyClick = () => {
-    Router.push(`/company/${flowFromAPI.company_id}`);
+    Router.push(`/company/${flow.company_id}`);
   };
 
   const projectClick = () => {
-    Router.push(`/project/${flowFromAPI.project_id}`);
+    Router.push(`/project/${flow.project_id}`);
   };
   console.log(props);
   let viewerLink = null;
@@ -190,69 +215,78 @@ export default function (props) {
   return (
     <Fragment>
       <Layout gated={true} user={user} userLoading={userLoading}>
-        <Breadcrumbs aria-label="breadcrumb">
-          <Link color="inherit" href="/dashboard">
-            Home
-          </Link>
-          <Link color="inherit" href="" onClick={companyClick}>
-            {flowFromAPI ? flowFromAPI.company_name : ""}
-          </Link>
-          <Link color="textPrimary" href="" onClick={projectClick}>
-            {flowFromAPI ? flowFromAPI.name : ""}
-          </Link>
-        </Breadcrumbs>
-        <div>
-          <h2>{flowFromAPI ? flowFromAPI.name : ""}</h2>
-        </div>
-        <div className={classes.root}>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => handleShareFlowButtonClick()}
-          >
-            {title}
-          </Button>
+        {!flowLoading && flow && (
+          <div>
+            <Breadcrumbs aria-label="breadcrumb">
+              <Link color="inherit" href="/dashboard">
+                Home
+              </Link>
+              <Link color="inherit" href="" onClick={companyClick}>
+                {flow ? flow.company_name : ""}
+              </Link>
+              <Link color="textPrimary" href="" onClick={projectClick}>
+                {flow ? flow.name : ""}
+              </Link>
+            </Breadcrumbs>
 
-          {showLinkIcon && (
-            <LinkIcon
-              fontSize="medium"
-              onClick={() => handleLinkButtonClick()}
-            ></LinkIcon>
-          )}
-          <Button
-            variant="contained"
-            color="primary"
-            style={{ float: "right" }}
-            onClick={() => saveBpmn()}
-          >
-            Save
-          </Button>
-        </div>
+            <div>
+              <h2>{flow ? flow.name : ""}</h2>
+            </div>
 
-        <AlertDialogSlide
-          open={shareDialogOpened}
-          onCancel={closeDialogOpened}
-          setClose={(value) => {
-            setTimeout(() => {
-              setShareDialogOpened(value);
-            }, 500);
-          }}
-          link={viewerLink}
-          // onSubmit ={flowShare}
-        ></AlertDialogSlide>
-        <ShareConfirmation
-          message={
-            !showLinkIcon
-              ? `Are you sure to Share?`
-              : "Are you sure to Unshare?"
-          }
-          open={shareConfirmationDialogOpened}
-          onCancel={shareConfirmationDialogCancel}
-          onConfirm={shareConfirmationDialogConfirm}
-        ></ShareConfirmation>
+            <div className={classes.root}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => handleShareFlowButtonClick()}
+              >
+                {flow.publish ? "Share" : "Unshare"}
+              </Button>
 
-        {!flowLoading && <BPMNContainer flow={flowFromAPI}></BPMNContainer>}
-        {flowLoading && <div>Loading</div>}
+              {!flow.publish && (
+                <LinkIcon
+                  fontSize="medium"
+                  onClick={() => handleLinkButtonClick()}
+                ></LinkIcon>
+              )}
+            </div>
+
+            <AlertDialogSlide
+              open={shareDialogOpened}
+              onCancel={closeDialogOpened}
+              setClose={(value) => {
+                setTimeout(() => {
+                  setShareDialogOpened(value);
+                }, 500);
+              }}
+              link={viewerLink}
+              // onSubmit ={flowShare}
+            ></AlertDialogSlide>
+            <ShareConfirmation
+              message={
+                flow.publish
+                  ? `Are you sure to Share?`
+                  : "Are you sure to Unshare?"
+              }
+              open={shareConfirmationDialogOpened}
+              onCancel={shareConfirmationDialogCancel}
+              onConfirm={shareConfirmationDialogConfirm}
+            ></ShareConfirmation>
+
+            <SaveConfirmation
+              message={`Are you sure to Save?`}
+              open={saveConfirmationDialogOpened}
+              onCancel={saveConfirmationDialogCancel}
+              onConfirm={saveConfirmationDialogConfirm}
+            ></SaveConfirmation>
+
+            <BPMNContainer
+              flow={flowFromAPI}
+              onSave={openSaveConfirmation}
+            ></BPMNContainer>
+          </div>
+        )}
+
+        {flowLoading && !flow && <div>Loading</div>}
       </Layout>
     </Fragment>
   );

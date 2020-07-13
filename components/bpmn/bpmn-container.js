@@ -1,5 +1,6 @@
 import BpmnModeler from "bpmn-js/lib/Modeler";
 import emptyBpmn from "./empty.bpmn";
+import { Button } from "@material-ui/core";
 
 export default class BPMNContainer extends React.Component {
   componentDidMount() {
@@ -7,14 +8,17 @@ export default class BPMNContainer extends React.Component {
       container: "#bpmnview",
     });
     // this.newDiagram();
-    // this.modeler.saveXML({ format: true }, function (err, xml) {
-    //   //here xml is the bpmn format
-    // });
+
     this.openDiagram(this.props.flow.flow_file);
   }
-  // newDiagram() {
-
-  // }
+  saveDiagram() {
+    this.modeler.saveXML({ format: true }, (err, xml) => {
+      //here xml is the bpmn format
+      if (!err) {
+        this.props.onSave(xml);
+      }
+    });
+  }
   openDiagram(xml) {
     this.modeler.importXML(xml, (error) => {
       if (error) {
@@ -28,6 +32,14 @@ export default class BPMNContainer extends React.Component {
   render() {
     return (
       <React.Fragment>
+        <Button
+          variant="contained"
+          color="primary"
+          style={{ float: "right", zIndex: 9999 }}
+          onClick={() => this.saveDiagram()}
+        >
+          Save
+        </Button>
         <div id="bpmnview"></div>
         <style jsx>
           {`
