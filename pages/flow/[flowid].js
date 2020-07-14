@@ -181,14 +181,14 @@ export default function (props) {
   };
 
   const shareConfirmationDialogConfirm = () => {
-    if (flow.publish) {
+    if (!flow.publish) {
       setShareDialogOpened(true);
 
-      fetchPublicFlow(flowid, user, 0);
+      fetchPublicFlow(flowid, user, 1);
 
       setShowLinkIcon(true);
     } else {
-      fetchPublicFlow(flowid, user, 1);
+      fetchPublicFlow(flowid, user, 0);
       setShareDialogOpened(false);
 
       setShowLinkIcon(false);
@@ -201,16 +201,19 @@ export default function (props) {
   const companyClick = () => {
     Router.push(`/company/${flow.company_id}`);
   };
-
   const projectClick = () => {
     Router.push(`/project/${flow.project_id}`);
   };
-  console.log(props);
+
+  const flowClick = () => {
+    Router.push(`/flow/${flowid}`);
+  };
+  // console.log(props);
   let viewerLink = null;
   if (props.location) {
     let host = props.location.split("/flow/")[0];
     viewerLink = host + "/viewer/" + flowid;
-    console.log(viewerLink);
+    //console.log(viewerLink);
   }
   return (
     <Fragment>
@@ -224,7 +227,10 @@ export default function (props) {
               <Link color="inherit" href="" onClick={companyClick}>
                 {flow ? flow.company_name : ""}
               </Link>
-              <Link color="textPrimary" href="" onClick={projectClick}>
+              <Link color="inherit" href="" onClick={projectClick}>
+                {flowFromAPI ? flowFromAPI.project_name : ""}
+              </Link>
+              <Link color="textPrimary" href="" onClick={flowClick}>
                 {flow ? flow.name : ""}
               </Link>
             </Breadcrumbs>
@@ -239,10 +245,10 @@ export default function (props) {
                 color="primary"
                 onClick={() => handleShareFlowButtonClick()}
               >
-                {flow.publish ? "Share" : "Unshare"}
+                {!flow.publish ? "Share" : "Unshare"}
               </Button>
 
-              {!flow.publish && (
+              {!flow.publish || (
                 <LinkIcon
                   fontSize="medium"
                   onClick={() => handleLinkButtonClick()}
@@ -263,7 +269,7 @@ export default function (props) {
             ></AlertDialogSlide>
             <ShareConfirmation
               message={
-                flow.publish
+                !flow.publish
                   ? `Are you sure to Share?`
                   : "Are you sure to Unshare?"
               }

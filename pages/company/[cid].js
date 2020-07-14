@@ -204,7 +204,7 @@ export default function (props) {
       <Layout gated={true} user={user} userLoading={userLoading}>
         <Breadcrumbs aria-label="breadcrumb">
           <Link color="inherit" href="/dashboard">
-            HOME
+            Home
           </Link>
           <Link color="textPrimary" href="" onClick={companyClick}>
             {companyFromAPI ? companyFromAPI.name : ""}
