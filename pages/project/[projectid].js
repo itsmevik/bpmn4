@@ -118,11 +118,11 @@ export default function (props) {
   };
 
   const editFlow = async (flowName, flowDescription, flowData) => {
-    var file = new File([emptyBPMN], "emptyBPMN.xml", { type: "text/plain" });
+    //var file = new File([emptyBPMN], "emptyBPMN.xml", { type: "text/plain" });
     var formData = new FormData();
     formData.append("f_id", flowData.f_id);
     formData.append("name", flowName);
-    formData.append("flow_file", file);
+    //formData.append("flow_file", file);
     formData.append("user_sub", user.sub);
     // formData.append("description", flowDescription);
 
