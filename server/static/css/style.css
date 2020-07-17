@@ -7780,7 +7780,7 @@ html {
 body {
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-family: 'Open Sans', sans-serif;
   font-size: 1rem;
   font-weight: 400; }
 
@@ -7807,7 +7807,7 @@ h5,
 .h5,
 h6,
 .h6 {
-  font-family: "Playfair Display", serif; }
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; }
 
 h1,
 .h1 {
@@ -7908,7 +7908,7 @@ button,
 .btn-button {
   text-transform: uppercase;
   font-style: normal;
-  font-size: 14px;
+  font-size: 24px;
   min-width: 170px;
   font-weight: bold;
   display: inline-block;
@@ -7917,7 +7917,8 @@ button,
   padding: 15px 20px;
   float: left;
   transition: all 0.5s;
-  color: #fff;
+  color: #000;
+  background: #fff;
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
@@ -8029,7 +8030,7 @@ button,
     text-transform: uppercase; }
 .site-header.header-bg {
   padding: 0px 2vw;
-  background: url("../../bpm/images/bg.png") no-repeat center center;
+  background: url("../../1/images/bg.png") no-repeat center center;
   background-size: cover;
   min-height: 100vh; }
   @media (max-width: 767.98px) {
@@ -8173,7 +8174,7 @@ Sidemenu css start here
           font-size: 12px;
           text-transform: uppercase; }
         .side-menu .posts-block-main .post-block .post-block-text h5 {
-          font-family: "Roboto", sans-serif;
+          font-family: "Open Sans", sans-serif;
           font-weight: 300;
           margin-top: 0.5rem; }
         .side-menu .posts-block-main .post-block .post-block-text p {
@@ -8209,9 +8210,9 @@ Sidemenu css start here
     object-fit: cover; }
 
 footer.site-footer {
-  background: #000;
+  background: #fff;
   padding: 30px 15px;
-  color: #fff;
+  color: #252525;
   font-size: 16px; }
   footer.site-footer p {
     margin: 0; }
@@ -8461,7 +8462,7 @@ footer.site-footer {
   background: #dddddd;
   min-height: 350px;
   padding: 50px 0;
-  background: url("../../bpm/images/bg.png") no-repeat center center;
+  background: url("../../1/images/bg.png") no-repeat center center;
   background-position: center center;
   background-attachment: fixed;
   color: #fff;
@@ -8602,12 +8603,12 @@ body.scrolled #sidebar {
     font-weight: bold; }
 
 .accordion-block {
-  background: url("../../bpm/images/coding.jpg") no-repeat center center;
+  background: url("../../1/images/coding.jpg") no-repeat center center;
   background-size: cover;
   background-attachment: fixed;
   position: relative;
-  min-height: calc(100vh - 84px);
-  padding: 120px 0;
+  min-height: calc(100vh - 85px);
+  padding: 70px 0 100px;
   display: flex;
   align-items: center;
   top: 0px; }
@@ -8616,10 +8617,9 @@ body.scrolled #sidebar {
       display: block;
       min-height: 100vh;
       height: 100%;
-      padding: 120px 0 150px 0; } }
+      padding: 60px 0 100px 0; } }
   @media (max-width: 767.98px) {
     .accordion-block {
-      padding-bottom: 65px;
       height: auto;
       min-height: 100vh;
       display: flex; } }
@@ -8635,7 +8635,7 @@ body.scrolled #sidebar {
     height: 100%;
     background: rgba(0, 0, 0, 0.5); }
   .accordion-block ul.accordion {
-    font-family: Cambria, serif;
+    font-family: 'Open Sans', sans-serif;
     font-size: 16px;
     line-height: 1.5em;
     width: 100%;
@@ -8666,6 +8666,9 @@ body.scrolled #sidebar {
       webkit-transition-duration: 0.5s, 0.3s;
       -o-transition-duration: 0.5s, 0.3s;
       transition-duration: 0.5s, 0.3s; }
+      @media (max-width: 1199.98px) {
+        .accordion-block ul.accordion li {
+          height: 350px; } }
       @media (max-width: 991.98px) {
         .accordion-block ul.accordion li {
           width: 100%;
@@ -8711,7 +8714,7 @@ body.scrolled #sidebar {
         .accordion-block ul.accordion li .description h3 {
           margin: 0 0 15px 15px;
           color: #fff;
-          font-family: Cambria, serif; }
+          font-family: 'Open Sans', sans-serif; }
         .accordion-block ul.accordion li .description p {
           margin: 10px 15px;
           font-size: 15px;
@@ -8742,7 +8745,7 @@ body.scrolled #sidebar {
       .accordion-block ul.accordion li .description p,
       .accordion-block ul.accordion li .heading h2 {
         color: #fff;
-        font-family: Raleway, sans-serif; }
+        font-family: 'Open Sans', sans-serif; }
       .accordion-block ul.accordion li .heading h2 {
         font-size: 60px;
         line-height: 32px; }
@@ -8931,18 +8934,18 @@ body.scrolled #sidebar {
 .bpm-logo {
   height: 85px;
   width: 100%;
-  background: rgba(251, 251, 251, 0.15);
+  background: white;
   display: flex;
-  position: fixed;
+  position: relative;
   z-index: 2; }
   .bpm-logo .logo {
     float: left;
-    position: fixed;
+    position: relative;
     z-index: 2;
     left: 2vw;
-    top: 10px;
-    width: 65px;
-    height: 65px;
+    top: 0px;
+    width: 85px;
+    height: auto;
     background: #868786;
     color: #fff;
     display: flex;
@@ -8959,14 +8962,31 @@ body.scrolled #sidebar {
         left: 15px; } }
     .bpm-logo .logo:hover {
       text-decoration: none; }
+    .bpm-logo .logo img {
+      max-width: 100%;
+      height: auto; }
 
 .bpm-footer {
-  position: fixed;
+  position: relative;
   width: 100%;
   bottom: 0;
   z-index: 10; }
   @media (max-width: 767.98px) {
     .bpm-footer {
       position: relative; } }
+
+.social-media {
+  position: relative;
+  z-index: 1; }
+  .social-media ul {
+    float: right;
+    margin: 0 0 10px; }
+    .social-media ul li {
+      float: left;
+      margin-left: 15px;
+      background: #7f7f7f;
+      display: flex;
+      align-items: center;
+      min-height: 30px; }
 
 /*# sourceMappingURL=style.css.map */

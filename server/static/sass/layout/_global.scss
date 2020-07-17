@@ -5,7 +5,7 @@ html {
 body {
   padding: 0;
   margin: 0;
-  font-family: $font-family-base;
+  font-family: 'Open Sans', sans-serif;
   font-size: $font-size-base;
   font-weight: $font-weight-base;
 }
@@ -29,7 +29,7 @@ h5,
 .h5,
 h6,
 .h6 {
-  font-family: "Playfair Display", serif;
+  font-family: $font-family-base;
 }
 h1,
 .h1 {
@@ -125,7 +125,7 @@ button,
 .btn-button{
   text-transform: uppercase;
     font-style: normal;
-    font-size: 14px;
+    font-size: 24px;
     min-width: 170px;
     font-weight: bold; 
     display:inline-block;
@@ -134,7 +134,8 @@ button,
     padding: 15px 20px;
     float: left;
     transition: all 0.5s;
-    color: $white;
+    color: #000;
+    background: $white;
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
