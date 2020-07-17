@@ -19,6 +19,11 @@ import Button from "@material-ui/core/Button";
 import AlertDialogSlide from "../../components/dialogs/publish-flow";
 import ShareConfirmation from "../../components/dialogs/share-conformation";
 import SaveConfirmation from "../../components/dialogs/save-confirmation";
+import cogoToast from "cogo-toast";
+import SaveIcon from "@material-ui/icons/Save";
+import ScreenShareIcon from "@material-ui/icons/ScreenShare";
+import StopScreenShareIcon from "@material-ui/icons/StopScreenShare";
+import IconButton from "@material-ui/core/IconButton";
 
 const BPMNContainer = dynamic(
   () => import("../../components/bpmn/bpmn-container"),
@@ -35,7 +40,9 @@ const useStyles = makeStyles((theme) => ({
     // "& > *": {
     //   // margin: theme.spacing(),
     // },
-    paddingLeft: 10,
+    // marginLeft: 1,
+    float: "right",
+    // zIndex: 9999,
   },
   btnSave: {},
 }));
@@ -64,7 +71,7 @@ export default function (props) {
     return publishFlow;
   };
 
-  const updateFlow = async () => {
+  const updateFlow = async (updatedFlow) => {
     var formData = new FormData();
     var file = new File([updatedFlow], ".xml", {
       type: "text/plain",
@@ -86,8 +93,11 @@ export default function (props) {
   };
 
   const openSaveConfirmation = (updatedFlow) => {
-    setUpdatedFlow(updatedFlow);
-    setSaveConfirmationDialogOpened(true);
+    console.log(updatedFlow);
+    updateFlow(updatedFlow);
+    cogoToast.success("You saved Successfully!", { position: "bottom-right" });
+
+    //setSaveConfirmationDialogOpened(true);
   };
 
   const classes = useStyles();
@@ -103,7 +113,6 @@ export default function (props) {
   const [showLinkIcon, setShowLinkIcon] = useState(false);
 
   const [flow, setFlow] = useState(flowFromAPI);
-  const [updatedFlow, setUpdatedFlow] = useState();
   let publicFlowData = {};
 
   const [publish, setpublish] = useState(false);
@@ -135,7 +144,23 @@ export default function (props) {
   console.log(publish);
 
   const handleShareFlowButtonClick = () => {
-    setShareConfirmationDialogOpened(true);
+    //setShareConfirmationDialogOpened(true);
+    console.log("dialogopen");
+
+    if (!flow.publish) {
+      setShareDialogOpened(true);
+
+      fetchPublicFlow(flowid, user, 1);
+
+      setShowLinkIcon(true);
+    } else {
+      // fetchPublicFlow(flowid, user, 0);
+      // setShareDialogOpened(false);
+
+      // setShowLinkIcon(false);
+      setShareConfirmationDialogOpened(true);
+    }
+    //setShareConfirmationDialogOpened(false);
 
     // if (title == "SHARE") {
     //   // setShareDialogOpened(true);
@@ -154,9 +179,9 @@ export default function (props) {
     // }
   };
 
-  const handleSaveFlowButtonClick = () => {
-    setSaveConfirmationDialogOpened(true);
-  };
+  // const handleSaveFlowButtonClick = () => {
+  //   setSaveConfirmationDialogOpened(true);
+  // };
   console.log(publish);
   const handleLinkButtonClick = () => {
     setShareDialogOpened(true);
@@ -165,34 +190,38 @@ export default function (props) {
     setShareDialogOpened(false);
   };
 
-  const saveConfirmationDialogConfirm = () => {
-    console.log("saved");
-    updateFlow();
-    setSaveConfirmationDialogOpened(false);
-  };
+  // const saveConfirmationDialogConfirm = () => {
+  //   console.log("saved");
+  //   updateFlow();
+  //   setSaveConfirmationDialogOpened(false);
+  // };
 
-  const saveConfirmationDialogCancel = () => {
-    console.log("cancel");
-    setSaveConfirmationDialogOpened(false);
-  };
+  // const saveConfirmationDialogCancel = () => {
+  //   console.log("cancel");
+  //   setSaveConfirmationDialogOpened(false);
+  // };
 
   const shareConfirmationDialogCancel = () => {
     setShareConfirmationDialogOpened(false);
   };
 
   const shareConfirmationDialogConfirm = () => {
-    if (!flow.publish) {
-      setShareDialogOpened(true);
+    // if (!flow.publish) {
+    //   setShareDialogOpened(true);
 
-      fetchPublicFlow(flowid, user, 1);
+    //   fetchPublicFlow(flowid, user, 1);
 
-      setShowLinkIcon(true);
-    } else {
-      fetchPublicFlow(flowid, user, 0);
-      setShareDialogOpened(false);
+    //   setShowLinkIcon(true);
+    // } else {
+    //   fetchPublicFlow(flowid, user, 0);
+    //   setShareDialogOpened(true);
 
-      setShowLinkIcon(false);
-    }
+    //   setShowLinkIcon(false);
+    // }
+    fetchPublicFlow(flowid, user, 0);
+    setShareDialogOpened(false);
+
+    setShowLinkIcon(false);
     setShareConfirmationDialogOpened(false);
 
     console.log("confirm");
@@ -217,7 +246,12 @@ export default function (props) {
   }
   return (
     <Fragment>
-      <Layout gated={true} user={user} userLoading={userLoading}>
+      <Layout
+        gated={true}
+        user={user}
+        userLoading={userLoading}
+        fullWidth={true}
+      >
         {!flowLoading && flow && (
           <div>
             <Breadcrumbs aria-label="breadcrumb">
@@ -235,24 +269,44 @@ export default function (props) {
               </Link>
             </Breadcrumbs>
 
-            <div>
+            <div style={{ marginLeft: 50 }}>
               <h2>{flow ? flow.name : ""}</h2>
             </div>
 
             <div className={classes.root}>
-              <Button
-                variant="contained"
-                color="primary"
+              <IconButton
+                style={{
+                  zIndex: 9999,
+                  height: 50,
+                  width: 50,
+                  //float: "right",
+                  // marginLeft: 20,
+                }}
+                // variant="contained"
+                // color="primary"
                 onClick={() => handleShareFlowButtonClick()}
               >
-                {!flow.publish ? "Share" : "Unshare"}
-              </Button>
+                {!flow.publish ? (
+                  <ScreenShareIcon
+                    fontSize="large"
+                    color="primary"
+                  ></ScreenShareIcon>
+                ) : (
+                  <StopScreenShareIcon
+                    fontSize="large"
+                    color="primary"
+                  ></StopScreenShareIcon>
+                )}
+              </IconButton>
 
               {!flow.publish || (
-                <LinkIcon
-                  fontSize="medium"
-                  onClick={() => handleLinkButtonClick()}
-                ></LinkIcon>
+                <IconButton>
+                  <LinkIcon
+                    style={{ zIndex: 9999 }}
+                    fontSize="medium"
+                    onClick={() => handleLinkButtonClick()}
+                  ></LinkIcon>
+                </IconButton>
               )}
             </div>
 
@@ -268,22 +322,18 @@ export default function (props) {
               // onSubmit ={flowShare}
             ></AlertDialogSlide>
             <ShareConfirmation
-              message={
-                !flow.publish
-                  ? `Are you sure to Share?`
-                  : "Are you sure to Unshare?"
-              }
+              message={flow.publish && "Are you sure to Unshare?"}
               open={shareConfirmationDialogOpened}
               onCancel={shareConfirmationDialogCancel}
               onConfirm={shareConfirmationDialogConfirm}
             ></ShareConfirmation>
 
-            <SaveConfirmation
+            {/* <SaveConfirmation
               message={`Are you sure to Save?`}
               open={saveConfirmationDialogOpened}
-              onCancel={saveConfirmationDialogCancel}
+              //   onCancel={saveConfirmationDialogCancel}
               onConfirm={saveConfirmationDialogConfirm}
-            ></SaveConfirmation>
+            ></SaveConfirmation> */}
 
             <BPMNContainer
               flow={flowFromAPI}

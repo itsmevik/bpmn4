@@ -1,6 +1,11 @@
 import BpmnModeler from "bpmn-js/lib/Modeler";
 import emptyBpmn from "./empty.bpmn";
 import { Button } from "@material-ui/core";
+import SaveIcon from "@material-ui/icons/Save";
+import IconButton from "@material-ui/core/IconButton";
+import ZoomInIcon from "@material-ui/icons/ZoomIn";
+import ZoomOutIcon from "@material-ui/icons/ZoomOut";
+import CenterFocusStrongIcon from "@material-ui/icons/CenterFocusStrong";
 
 export default class BPMNContainer extends React.Component {
   componentDidMount() {
@@ -32,14 +37,18 @@ export default class BPMNContainer extends React.Component {
   render() {
     return (
       <React.Fragment>
-        <Button
-          variant="contained"
-          color="primary"
-          style={{ float: "right", zIndex: 9999 }}
-          onClick={() => this.saveDiagram()}
+        <IconButton
+          style={{ float: "right", zIndex: 9999, width: 50, height: 50 }}
         >
-          Save
-        </Button>
+          <SaveIcon
+            fontSize="large"
+            color="primary"
+            onClick={() => this.saveDiagram()}
+          >
+            Save
+          </SaveIcon>
+        </IconButton>
+
         <div id="bpmnview"></div>
         <style jsx>
           {`
@@ -48,6 +57,30 @@ export default class BPMNContainer extends React.Component {
             }
           `}
         </style>
+        <div
+          style={{
+            float: "right",
+            position: "absolute",
+            right: 0,
+            bottom: -60,
+            width: 60,
+          }}
+        >
+          <IconButton style={{ marginBottom: 10 }}>
+            <ZoomInIcon fontSize="large" color="primary"></ZoomInIcon>
+          </IconButton>
+
+          <IconButton style={{ marginBottom: 10 }}>
+            <ZoomOutIcon fontSize="large" color="primary"></ZoomOutIcon>
+          </IconButton>
+
+          <IconButton>
+            <CenterFocusStrongIcon
+              fontSize="large"
+              color="primary"
+            ></CenterFocusStrongIcon>
+          </IconButton>
+        </div>
       </React.Fragment>
     );
   }
