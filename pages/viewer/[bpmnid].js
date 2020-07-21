@@ -22,7 +22,7 @@ export default function (props) {
   console.log(getPublicFlowFromAPI, bpmnid);
 
   return (
-    <Layout>
+    <Layout fullWidth={true}>
       <div>
         <h2>{getPublicFlowFromAPI ? getPublicFlowFromAPI.name : ""}</h2>
       </div>

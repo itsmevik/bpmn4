@@ -23,6 +23,7 @@ import cogoToast from "cogo-toast";
 import SaveIcon from "@material-ui/icons/Save";
 import ScreenShareIcon from "@material-ui/icons/ScreenShare";
 import StopScreenShareIcon from "@material-ui/icons/StopScreenShare";
+import CloudDownloadIcon from "@material-ui/icons/CloudDownload";
 import IconButton from "@material-ui/core/IconButton";
 
 const BPMNContainer = dynamic(
@@ -308,6 +309,14 @@ export default function (props) {
                   ></LinkIcon>
                 </IconButton>
               )}
+
+              <IconButton>
+                <CloudDownloadIcon
+                  style={{ zIndex: 9999 }}
+                  fontSize="medium"
+                  color="primary"
+                ></CloudDownloadIcon>
+              </IconButton>
             </div>
 
             <AlertDialogSlide

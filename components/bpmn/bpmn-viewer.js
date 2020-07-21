@@ -9,7 +9,7 @@ import CenterFocusStrongIcon from "@material-ui/icons/CenterFocusStrong";
 export default class Viewer extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { xmlFile: null, loading: false, error: false };
+    this.state = { xmlFile: null, loading: false, error: false, zoomCount: 1 };
   }
   static getDerivedStateFromProps(props, state) {
     if (props.flowFile) {
@@ -22,22 +22,30 @@ export default class Viewer extends React.Component {
     }
     return null;
   }
-  componentDidMount() {}
+  componentDidMount() {
+    this.viewer = new BPMNViewer({
+      container: "#canvas",
+    });
+  }
   openDiagram(xml) {
+    console.log(this.viewer);
     this.viewer.importXML(xml, (error) => {
       if (error) {
         return "404Error";
       }
+      // var canvas = this.viewer.get("canvas");
+      // canvas.zoom("fit-viewport", "auto");
     });
   }
   render() {
     if (this.state.loading) {
-      this.viewer = new BPMNViewer({
-        container: "#canvas",
-      });
-      this.openDiagram(
-        this.state.xmlFile != null ? this.state.xmlFile : "404error"
-      );
+      if (this.state.xmlFile) {
+        this.openDiagram(
+          this.state.xmlFile != null ? this.state.xmlFile : "404error"
+        );
+      }
+      var canvas = this.viewer.get("canvas");
+      // canvas.zoom("fit-viewport", "auto");
     }
 
     return (
@@ -68,15 +76,51 @@ export default class Viewer extends React.Component {
             width: 60,
           }}
         >
-          <IconButton style={{ marginBottom: 10 }}>
+          <IconButton
+            style={{ marginBottom: 10 }}
+            onClick={() => {
+              var count = this.state.zoomCount;
+              if (count != 1 && count <= 4) {
+                count++;
+                this.setState({ zoomCount: count });
+                canvas.zoom(count * 0.5);
+              }
+              if (count == 1) {
+                this.setState({ zoomCount: 3 });
+                canvas.zoom(1.5);
+              }
+            }}
+          >
             <ZoomInIcon fontSize="large" color="primary"></ZoomInIcon>
           </IconButton>
 
-          <IconButton style={{ marginBottom: 10 }}>
+          <IconButton
+            style={{ marginBottom: 10 }}
+            onClick={() => {
+              var count = this.state.zoomCount;
+              if (count >= 2 && count != 4) {
+                canvas.zoom(count * 0.5);
+
+                count--;
+                console.log(count * 0.5, this.state.zoomCount);
+
+                this.setState({ zoomCount: count });
+              }
+              if (count == 4) {
+                this.setState({ zoomCount: 3 });
+                canvas.zoom(2);
+              }
+            }}
+          >
             <ZoomOutIcon fontSize="large" color="primary"></ZoomOutIcon>
           </IconButton>
 
-          <IconButton>
+          <IconButton
+            onClick={() => {
+              var canvas = this.viewer.get("canvas");
+              canvas.zoom("fit-viewport", "auto");
+            }}
+          >
             <CenterFocusStrongIcon
               fontSize="large"
               color="primary"
