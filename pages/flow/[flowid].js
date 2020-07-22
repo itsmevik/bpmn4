@@ -25,7 +25,7 @@ import ScreenShareIcon from "@material-ui/icons/ScreenShare";
 import StopScreenShareIcon from "@material-ui/icons/StopScreenShare";
 import CloudDownloadIcon from "@material-ui/icons/CloudDownload";
 import IconButton from "@material-ui/core/IconButton";
-
+import FileSaver, { saveAs } from "file-saver";
 const BPMNContainer = dynamic(
   () => import("../../components/bpmn/bpmn-container"),
   {
@@ -96,9 +96,24 @@ export default function (props) {
   const openSaveConfirmation = (updatedFlow) => {
     console.log(updatedFlow);
     updateFlow(updatedFlow);
+    let newUpdatedFlow = flow;
+    newUpdatedFlow.flow_file = updatedFlow;
+    // console.log(newUpdatedFlow);
+    //setFlow(newFlow);
+    setupdateFlow(newUpdatedFlow);
+    //console.log(newFlow.flow_file);
+
     cogoToast.success("You saved Successfully!", { position: "bottom-right" });
 
     //setSaveConfirmationDialogOpened(true);
+  };
+
+  const downloadBpmn = () => {
+    var blob = new Blob([newFlow ? newFlow.flow_file : flow.flow_file], {
+      type: "text/xml",
+    });
+    FileSaver.saveAs(blob, flow.name + ".bpmn");
+    // console.log(newFlow.flow_file);
   };
 
   const classes = useStyles();
@@ -114,6 +129,8 @@ export default function (props) {
   const [showLinkIcon, setShowLinkIcon] = useState(false);
 
   const [flow, setFlow] = useState(flowFromAPI);
+  const [newFlow, setupdateFlow] = useState(null);
+
   let publicFlowData = {};
 
   const [publish, setpublish] = useState(false);
@@ -315,6 +332,7 @@ export default function (props) {
                   style={{ zIndex: 9999 }}
                   fontSize="medium"
                   color="primary"
+                  onClick={downloadBpmn}
                 ></CloudDownloadIcon>
               </IconButton>
             </div>
