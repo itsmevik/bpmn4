@@ -52,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function (props) {
   const fetchPublicFlow = async (flowId, user, publish) => {
-    console.log(publish);
+    //console.log(publish);
 
     const res = await fetch("/laravel/flows/publish-flow", {
       method: "POST",
@@ -67,7 +67,7 @@ export default function (props) {
     });
 
     const publishFlow = res.ok ? await res.json() : null;
-    console.log(publishFlow);
+    // console.log(publishFlow);
     setFlow(publishFlow.response);
     return publishFlow;
   };
@@ -89,12 +89,12 @@ export default function (props) {
     if (flowInfo.ok) {
       var newFlowInfo = await flowInfo.json();
       setFlow(newFlowInfo.response);
-      console.log(newFlowInfo);
+      //console.log(newFlowInfo);
     }
   };
 
   const openSaveConfirmation = (updatedFlow) => {
-    console.log(updatedFlow);
+    //console.log(updatedFlow);
     updateFlow(updatedFlow);
     let newUpdatedFlow = flow;
     newUpdatedFlow.flow_file = updatedFlow;
@@ -159,11 +159,11 @@ export default function (props) {
   //   setFlows(publicFlowFromAPI);
   // }, [publicFlowFromAPI]);
   const [title, setTitle] = useState("SHARE");
-  console.log(publish);
+  //console.log(publish);
 
   const handleShareFlowButtonClick = () => {
     //setShareConfirmationDialogOpened(true);
-    console.log("dialogopen");
+    //console.log("dialogopen");
 
     if (!flow.publish) {
       setShareDialogOpened(true);
@@ -200,7 +200,7 @@ export default function (props) {
   // const handleSaveFlowButtonClick = () => {
   //   setSaveConfirmationDialogOpened(true);
   // };
-  console.log(publish);
+  //console.log(publish);
   const handleLinkButtonClick = () => {
     setShareDialogOpened(true);
   };
@@ -242,7 +242,7 @@ export default function (props) {
     setShowLinkIcon(false);
     setShareConfirmationDialogOpened(false);
 
-    console.log("confirm");
+    // console.log("confirm");
   };
 
   const companyClick = () => {

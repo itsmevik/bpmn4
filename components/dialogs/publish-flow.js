@@ -21,7 +21,7 @@ const AlertDialogSlide = (props) => {
     const copytxt = document.querySelector("#copyText");
     copytxt.select();
     document.execCommand("copy");
-    console.log(props.link);
+    // console.log(props.link);
     props.setClose(false);
   };
 

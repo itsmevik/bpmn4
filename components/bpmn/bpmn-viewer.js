@@ -9,7 +9,7 @@ import CenterFocusStrongIcon from "@material-ui/icons/CenterFocusStrong";
 export default class Viewer extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { xmlFile: null, loading: false, error: false, zoomCount: 1 };
+    this.state = { xmlFile: null, loading: false, error: false, zoomCount: 2 };
   }
   static getDerivedStateFromProps(props, state) {
     if (props.flowFile) {
@@ -28,13 +28,11 @@ export default class Viewer extends React.Component {
     });
   }
   openDiagram(xml) {
-    console.log(this.viewer);
+    // console.log(this.viewer);
     this.viewer.importXML(xml, (error) => {
       if (error) {
         return "404Error";
       }
-      // var canvas = this.viewer.get("canvas");
-      // canvas.zoom("fit-viewport", "auto");
     });
   }
   render() {
@@ -80,15 +78,25 @@ export default class Viewer extends React.Component {
             style={{ marginBottom: 10 }}
             onClick={() => {
               var count = this.state.zoomCount;
-              if (count != 1 && count <= 4) {
+              if (count <= 5) {
                 count++;
-                this.setState({ zoomCount: count });
+                this.setState({ zoomCount: count * 0.9 });
                 canvas.zoom(count * 0.5);
+                //console.log(count * 0.5);
+
+                // if (count >= 1.5) {
+                //   console.log(count * 0.2);
+                //   canvas.zoom(count * 0.2);
+                // }
+                // canvas.zoom(count < 1.5 ? count * 0.2 : count * 0.5);
+                // console.log(count < 1.5 ? count * 0.2 : count * 0.5);
               }
-              if (count == 1) {
-                this.setState({ zoomCount: 3 });
-                canvas.zoom(1.5);
-              }
+              // if (count == 1) {
+              //   this.setState({ zoomCount: 3 });
+              //   console.log(count, this.state.zoomCount);
+
+              //   canvas.zoom(1.5);
+              // }
             }}
           >
             <ZoomInIcon fontSize="large" color="primary"></ZoomInIcon>
@@ -98,18 +106,25 @@ export default class Viewer extends React.Component {
             style={{ marginBottom: 10 }}
             onClick={() => {
               var count = this.state.zoomCount;
-              if (count >= 2 && count != 4) {
-                canvas.zoom(count * 0.5);
+              if (count > 1.5) {
+                // canvas.zoom(count * 0.5);
 
                 count--;
-                console.log(count * 0.5, this.state.zoomCount);
 
-                this.setState({ zoomCount: count });
+                this.setState({ zoomCount: count * 0.8 });
+                // console.log(count * 0.5);
+
+                canvas.zoom(count * 0.5);
+
+                // if (count <= 1.5) {
+                //   console.log(count * 0.5);
+                //   canvas.zoom(count * 0.5);
+                // }
               }
-              if (count == 4) {
-                this.setState({ zoomCount: 3 });
-                canvas.zoom(2);
-              }
+              // if (count == 4) {
+              //   this.setState({ zoomCount: 3 });
+              //   //canvas.zoom(2);
+              // }
             }}
           >
             <ZoomOutIcon fontSize="large" color="primary"></ZoomOutIcon>
@@ -118,6 +133,8 @@ export default class Viewer extends React.Component {
           <IconButton
             onClick={() => {
               var canvas = this.viewer.get("canvas");
+              this.setState({ zoomCount: 2 });
+
               canvas.zoom("fit-viewport", "auto");
             }}
           >
