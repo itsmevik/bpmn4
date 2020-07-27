@@ -14,15 +14,15 @@ export default function (props) {
   const router = useRouter();
   //const { flowid, bpmnid } = router.query;
   const { bpmnid } = router.query;
-  console.log(router);
+  //console.log(router);
 
   const { getPublicFlowFromAPI, getPublicFlowLoading } = useFetchGetPublicFlow(
     bpmnid
   );
-  console.log(getPublicFlowFromAPI, bpmnid);
+  // console.log(getPublicFlowFromAPI, bpmnid);
 
   return (
-    <Layout>
+    <Layout fullWidth={true}>
       <div>
         <h2>{getPublicFlowFromAPI ? getPublicFlowFromAPI.name : ""}</h2>
       </div>

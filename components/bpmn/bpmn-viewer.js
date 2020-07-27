@@ -2,10 +2,14 @@
 import emptyBpmn from "./empty.bpmn";
 import BPMNViewer from "bpmn-js/lib/NavigatedViewer";
 import emptyBPMN from "./empty.bpmn";
+import IconButton from "@material-ui/core/IconButton";
+import ZoomInIcon from "@material-ui/icons/ZoomIn";
+import ZoomOutIcon from "@material-ui/icons/ZoomOut";
+import CenterFocusStrongIcon from "@material-ui/icons/CenterFocusStrong";
 export default class Viewer extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { xmlFile: null, loading: false, error: false };
+    this.state = { xmlFile: null, loading: false, error: false, zoomCount: 2 };
   }
   static getDerivedStateFromProps(props, state) {
     if (props.flowFile) {
@@ -18,8 +22,13 @@ export default class Viewer extends React.Component {
     }
     return null;
   }
-  componentDidMount() {}
+  componentDidMount() {
+    this.viewer = new BPMNViewer({
+      container: "#canvas",
+    });
+  }
   openDiagram(xml) {
+    // console.log(this.viewer);
     this.viewer.importXML(xml, (error) => {
       if (error) {
         return "404Error";
@@ -28,12 +37,13 @@ export default class Viewer extends React.Component {
   }
   render() {
     if (this.state.loading) {
-      this.viewer = new BPMNViewer({
-        container: "#canvas",
-      });
-      this.openDiagram(
-        this.state.xmlFile != null ? this.state.xmlFile : "404error"
-      );
+      if (this.state.xmlFile) {
+        this.openDiagram(
+          this.state.xmlFile != null ? this.state.xmlFile : "404error"
+        );
+      }
+      var canvas = this.viewer.get("canvas");
+      // canvas.zoom("fit-viewport", "auto");
     }
 
     return (
@@ -54,6 +64,85 @@ export default class Viewer extends React.Component {
               }
             `}
           </style>
+        </div>
+        <div
+          style={{
+            float: "right",
+            position: "absolute",
+            right: 0,
+            bottom: -60,
+            width: 60,
+          }}
+        >
+          <IconButton
+            style={{ marginBottom: 10 }}
+            onClick={() => {
+              var count = this.state.zoomCount;
+              if (count <= 5) {
+                count++;
+                this.setState({ zoomCount: count * 0.9 });
+                canvas.zoom(count * 0.5);
+                //console.log(count * 0.5);
+
+                // if (count >= 1.5) {
+                //   console.log(count * 0.2);
+                //   canvas.zoom(count * 0.2);
+                // }
+                // canvas.zoom(count < 1.5 ? count * 0.2 : count * 0.5);
+                // console.log(count < 1.5 ? count * 0.2 : count * 0.5);
+              }
+              // if (count == 1) {
+              //   this.setState({ zoomCount: 3 });
+              //   console.log(count, this.state.zoomCount);
+
+              //   canvas.zoom(1.5);
+              // }
+            }}
+          >
+            <ZoomInIcon fontSize="large" color="primary"></ZoomInIcon>
+          </IconButton>
+
+          <IconButton
+            style={{ marginBottom: 10 }}
+            onClick={() => {
+              var count = this.state.zoomCount;
+              if (count > 1.5) {
+                // canvas.zoom(count * 0.5);
+
+                count--;
+
+                this.setState({ zoomCount: count * 0.8 });
+                // console.log(count * 0.5);
+
+                canvas.zoom(count * 0.5);
+
+                // if (count <= 1.5) {
+                //   console.log(count * 0.5);
+                //   canvas.zoom(count * 0.5);
+                // }
+              }
+              // if (count == 4) {
+              //   this.setState({ zoomCount: 3 });
+              //   //canvas.zoom(2);
+              // }
+            }}
+          >
+            <ZoomOutIcon fontSize="large" color="primary"></ZoomOutIcon>
+          </IconButton>
+
+          <IconButton
+            onClick={() => {
+              var canvas = this.viewer.get("canvas");
+              this.setState({ zoomCount: 2 });
+
+              canvas.zoom("fit-viewport", "auto");
+            }}
+          >
+            <CenterFocusStrongIcon
+              fontSize="large"
+              color="primary"
+            ></CenterFocusStrongIcon>
+          </IconButton>
         </div>
       </React.Fragment>
     );

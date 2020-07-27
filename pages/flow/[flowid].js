@@ -23,8 +23,9 @@ import cogoToast from "cogo-toast";
 import SaveIcon from "@material-ui/icons/Save";
 import ScreenShareIcon from "@material-ui/icons/ScreenShare";
 import StopScreenShareIcon from "@material-ui/icons/StopScreenShare";
+import CloudDownloadIcon from "@material-ui/icons/CloudDownload";
 import IconButton from "@material-ui/core/IconButton";
-
+import FileSaver, { saveAs } from "file-saver";
 const BPMNContainer = dynamic(
   () => import("../../components/bpmn/bpmn-container"),
   {
@@ -51,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function (props) {
   const fetchPublicFlow = async (flowId, user, publish) => {
-    console.log(publish);
+    //console.log(publish);
 
     const res = await fetch("/laravel/flows/publish-flow", {
       method: "POST",
@@ -66,7 +67,7 @@ export default function (props) {
     });
 
     const publishFlow = res.ok ? await res.json() : null;
-    console.log(publishFlow);
+    // console.log(publishFlow);
     setFlow(publishFlow.response);
     return publishFlow;
   };
@@ -88,16 +89,31 @@ export default function (props) {
     if (flowInfo.ok) {
       var newFlowInfo = await flowInfo.json();
       setFlow(newFlowInfo.response);
-      console.log(newFlowInfo);
+      //console.log(newFlowInfo);
     }
   };
 
   const openSaveConfirmation = (updatedFlow) => {
-    console.log(updatedFlow);
+    //console.log(updatedFlow);
     updateFlow(updatedFlow);
+    let newUpdatedFlow = flow;
+    newUpdatedFlow.flow_file = updatedFlow;
+    // console.log(newUpdatedFlow);
+    //setFlow(newFlow);
+    setupdateFlow(newUpdatedFlow);
+    //console.log(newFlow.flow_file);
+
     cogoToast.success("You saved Successfully!", { position: "bottom-right" });
 
     //setSaveConfirmationDialogOpened(true);
+  };
+
+  const downloadBpmn = () => {
+    var blob = new Blob([newFlow ? newFlow.flow_file : flow.flow_file], {
+      type: "text/xml",
+    });
+    FileSaver.saveAs(blob, flow.name + ".bpmn");
+    // console.log(newFlow.flow_file);
   };
 
   const classes = useStyles();
@@ -113,6 +129,8 @@ export default function (props) {
   const [showLinkIcon, setShowLinkIcon] = useState(false);
 
   const [flow, setFlow] = useState(flowFromAPI);
+  const [newFlow, setupdateFlow] = useState(null);
+
   let publicFlowData = {};
 
   const [publish, setpublish] = useState(false);
@@ -141,11 +159,11 @@ export default function (props) {
   //   setFlows(publicFlowFromAPI);
   // }, [publicFlowFromAPI]);
   const [title, setTitle] = useState("SHARE");
-  console.log(publish);
+  //console.log(publish);
 
   const handleShareFlowButtonClick = () => {
     //setShareConfirmationDialogOpened(true);
-    console.log("dialogopen");
+    //console.log("dialogopen");
 
     if (!flow.publish) {
       setShareDialogOpened(true);
@@ -182,7 +200,7 @@ export default function (props) {
   // const handleSaveFlowButtonClick = () => {
   //   setSaveConfirmationDialogOpened(true);
   // };
-  console.log(publish);
+  //console.log(publish);
   const handleLinkButtonClick = () => {
     setShareDialogOpened(true);
   };
@@ -224,7 +242,7 @@ export default function (props) {
     setShowLinkIcon(false);
     setShareConfirmationDialogOpened(false);
 
-    console.log("confirm");
+    // console.log("confirm");
   };
 
   const companyClick = () => {
@@ -308,6 +326,15 @@ export default function (props) {
                   ></LinkIcon>
                 </IconButton>
               )}
+
+              <IconButton>
+                <CloudDownloadIcon
+                  style={{ zIndex: 9999 }}
+                  fontSize="medium"
+                  color="primary"
+                  onClick={downloadBpmn}
+                ></CloudDownloadIcon>
+              </IconButton>
             </div>
 
             <AlertDialogSlide

@@ -8,6 +8,10 @@ import ZoomOutIcon from "@material-ui/icons/ZoomOut";
 import CenterFocusStrongIcon from "@material-ui/icons/CenterFocusStrong";
 
 export default class BPMNContainer extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { zoomCount: 2 };
+  }
   componentDidMount() {
     this.modeler = new BpmnModeler({
       container: "#bpmnview",
@@ -30,7 +34,7 @@ export default class BPMNContainer extends React.Component {
         return;
       }
       var canvas = this.modeler.get("canvas");
-      canvas.zoom("fit-viewport");
+      canvas.zoom("fit-viewport", "auto");
     });
   }
 
@@ -66,15 +70,56 @@ export default class BPMNContainer extends React.Component {
             width: 60,
           }}
         >
-          <IconButton style={{ marginBottom: 10 }}>
+          <IconButton
+            style={{ marginBottom: 10 }}
+            onClick={() => {
+              var canvas = this.modeler.get("canvas");
+              var count = this.state.zoomCount;
+              if (count <= 5) {
+                count++;
+                //console.log(count * 0.5, this.state.zoomCount);
+                this.setState({ zoomCount: count * 0.9 });
+                //if (count >= 1.5) {
+                canvas.zoom(count * 0.5);
+                //}
+              }
+              // if (count == 1) {
+              //   this.setState({ zoomCount: 3 });
+              //   canvas.zoom(1.5);
+              // }
+            }}
+          >
             <ZoomInIcon fontSize="large" color="primary"></ZoomInIcon>
           </IconButton>
 
-          <IconButton style={{ marginBottom: 10 }}>
+          <IconButton
+            style={{ marginBottom: 10 }}
+            onClick={() => {
+              var canvas = this.modeler.get("canvas");
+              var count = this.state.zoomCount;
+              if (count >= 1.5) {
+                count--;
+                // console.log(count * 0.5, this.state.zoomCount);
+
+                this.setState({ zoomCount: count *0.8});
+                canvas.zoom(count * 0.5);
+              }
+              // if (count == 4) {
+              //   this.setState({ zoomCount: 3 });
+              //   canvas.zoom(2);
+              // }
+            }}
+          >
             <ZoomOutIcon fontSize="large" color="primary"></ZoomOutIcon>
           </IconButton>
 
-          <IconButton>
+          <IconButton
+            onClick={() => {
+              var canvas = this.modeler.get("canvas");
+              this.setState({ zoomCount: 1.5 });
+              canvas.zoom("fit-viewport", "auto");
+            }}
+          >
             <CenterFocusStrongIcon
               fontSize="large"
               color="primary"
