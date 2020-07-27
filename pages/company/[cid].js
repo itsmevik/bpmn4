@@ -16,6 +16,7 @@ import Router from "next/router";
 import { makeStyles } from "@material-ui/styles";
 import EditProject from "../../components/dialogs/edit-project";
 
+import AddUSer from "../../components/dialogs/add-user";
 const useStyles = makeStyles((theme) => ({
   gridClass: {
     position: "relative",
@@ -39,6 +40,8 @@ export default function (props) {
     deleteConfirmationDialogOpened,
     setDeleteConfirmationDialogOpened,
   ] = useState(false);
+  const [addUserDialogOpened, setAddUserDialogOpened] = useState(false);
+
   useEffect(() => {
     setProjects(projectsFromAPI);
   }, [projectsFromAPI]);
@@ -141,6 +144,18 @@ export default function (props) {
   const openEditProjectDialog = () => {
     setEditProjectDialogClose(false);
   };
+  const handleAddUserButtonClick = () => {
+    // console.log("add-user");
+    setAddUserDialogOpened(true);
+  };
+
+  const closeUserAddDialogOpened = () => {
+    setAddUserDialogOpened(false);
+  };
+
+  const handleUserAddDialogConfirmed = () => {
+    setAddUserDialogOpened(false);
+  };
   const getProjectsList = (projects, projectsLoading) => {
     const classes = useStyles();
     if (!projectsLoading) {
@@ -168,6 +183,12 @@ export default function (props) {
                 }
                 onEdit={(projectId) => handleEditProject(projectId)}
               ></ProjectItem>
+
+              <AddUSer
+                open={addUserDialogOpened}
+                setClose={closeUserAddDialogOpened}
+                onSubmit={handleUserAddDialogConfirmed}
+              ></AddUSer>
             </Grid>
           );
         });
@@ -210,6 +231,16 @@ export default function (props) {
             {companyFromAPI ? companyFromAPI.name : ""}
           </Link>
         </Breadcrumbs>
+        <div>
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<AddIcon />}
+            onClick={() => handleAddUserButtonClick()}
+          >
+            Add User
+          </Button>
+        </div>
         <Grid container>
           <Grid item xs={12}>
             <div className="main-title">
