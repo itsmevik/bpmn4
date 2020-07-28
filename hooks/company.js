@@ -4,6 +4,7 @@ import fetch from "isomorphic-fetch";
 
 let companies;
 let company;
+let users;
 
 const fetchCompanies = async (user) => {
   const res = await fetch("/api/get-companies", {
@@ -27,6 +28,50 @@ const fetchCompany = async (user, companyId) => {
 
   company = res.ok ? await res.json() : null;
   return company;
+};
+
+const fetchUserAddedToCompany = async (user, companyId) => {
+  var formData = new FormData();
+  formData.append("user_sub", user.sub);
+  formData.append("company_id", companyId);
+
+  const res = await fetch("/laravel/companies/get-company-users", {
+    method: "POST",
+    body: formData,
+  });
+  users = res.ok ? await res.json() : null;
+  return users;
+  console.log("users");
+};
+
+export const UseFetchUserAddedToCompany = (user, companyId) => {
+  const [data, setUsers] = useState({
+    usersFromAPI: users || null,
+    usersLoading: true,
+  });
+  React.useEffect(() => {
+    if (!user) {
+      return;
+    }
+
+    let isMounted = true;
+    fetchUserAddedToCompany(user, companyId).then((userData) => {
+      if (isMounted) {
+        if (userData && userData.message == "no users are added") {
+          setUsers({
+            usersFromAPI: [],
+            usersLoading: false,
+          });
+        } else {
+          setUsers({
+            usersFromAPI: userData,
+            usersLoading: false,
+          });
+        }
+      }
+    });
+  }, [user]);
+  return data;
 };
 
 export const useFetchCompanies = (user) => {

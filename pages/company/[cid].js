@@ -7,6 +7,8 @@ import ProjectItem from "../../components/project-item";
 import { useRouter } from "next/router";
 import { useFetchUser } from "../../hooks/user";
 import { useFetchCompany } from "../../hooks/company";
+import { UseFetchUserAddedToCompany } from "../../hooks/company";
+
 import { useFetchProjects } from "../../hooks/project";
 import AddIcon from "@material-ui/icons/Add";
 import CreateProject from "../../components/dialogs/create-project";
@@ -29,6 +31,8 @@ export default function (props) {
   const { cid } = router.query;
   const { companyFromAPI, companyLoading } = useFetchCompany(user, cid);
   const { projectsFromAPI, projectsLoading } = useFetchProjects(user, cid);
+  const { usersFromAPI, usersLoading } = UseFetchUserAddedToCompany(user, cid);
+  console.log(usersFromAPI, usersLoading);
   const [projects, setProjects] = useState(projectsFromAPI);
   const [createProjectDialogOpened, setCreateProjectDialogOpened] = useState(
     false
@@ -90,6 +94,24 @@ export default function (props) {
       } else {
         setProjects([newProjectInfo.response]);
       }
+    }
+  };
+
+  const addUserToCompany = async (UserMail) => {
+    var formData = new FormData();
+    formData.append("company_id", cid);
+    formData.append("user_sub", user.sub);
+    formData.append("email", UserMail);
+    formData.append("is_admin", 1);
+    const userInfo = await fetch("/laravel/companies/add-user-to-company", {
+      method: "POST",
+      body: formData,
+    });
+    if (userInfo.ok) {
+      console.log("userInfo.ok");
+      var newUserInfo = await userInfo.json();
+      closeUserAddDialogOpened();
+      console.log(newUserInfo);
     }
   };
 
@@ -183,12 +205,6 @@ export default function (props) {
                 }
                 onEdit={(projectId) => handleEditProject(projectId)}
               ></ProjectItem>
-
-              <AddUSer
-                open={addUserDialogOpened}
-                setClose={closeUserAddDialogOpened}
-                onSubmit={handleUserAddDialogConfirmed}
-              ></AddUSer>
             </Grid>
           );
         });
@@ -231,16 +247,7 @@ export default function (props) {
             {companyFromAPI ? companyFromAPI.name : ""}
           </Link>
         </Breadcrumbs>
-        <div>
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<AddIcon />}
-            onClick={() => handleAddUserButtonClick()}
-          >
-            Add User
-          </Button>
-        </div>
+
         <Grid container>
           <Grid item xs={12}>
             <div className="main-title">
@@ -254,7 +261,17 @@ export default function (props) {
           </Grid>
         </Grid>
         <div>
-          <Grid container spacing={2}>
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<AddIcon />}
+            onClick={() => handleAddUserButtonClick()}
+          >
+            Add User
+          </Button>
+        </div>
+        <div>
+          <Grid container spacing={2} style={{ marginTop: 5 }}>
             <Grid item xs={12}>
               <Button
                 variant="contained"
@@ -269,6 +286,11 @@ export default function (props) {
             {getProjectsList(projects, projectsLoading)}
           </Grid>
         </div>
+        <AddUSer
+          open={addUserDialogOpened}
+          setClose={closeUserAddDialogOpened}
+          onSubmit={addUserToCompany}
+        ></AddUSer>
         <CreateProject
           open={createProjectDialogOpened}
           onCancel={closeCreateProjectDialog}

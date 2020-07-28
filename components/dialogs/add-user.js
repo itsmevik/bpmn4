@@ -18,10 +18,10 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 const AddUser = (props) => {
-  const [addUserMail, setAddUserMail] = useState("");
+  const [UserMail, setUserMail] = useState("");
 
   const addUserChangeHandler = (e) => {
-    setAddUserMail(e.target.value);
+    setUserMail(e.target.value);
   };
   return (
     <div>
@@ -42,7 +42,7 @@ const AddUser = (props) => {
                 required
                 labelWidth={0}
                 style={{ width: 400, height: 50 }}
-                value={addUserMail}
+                value={UserMail}
                 onChange={addUserChangeHandler}
               />
             </div>
@@ -60,7 +60,7 @@ const AddUser = (props) => {
           <Button
             color="primary"
             variant="contained"
-            onClick={() => props.onSubmit()}
+            onClick={() => props.onSubmit(UserMail)}
           >
             Add
           </Button>
