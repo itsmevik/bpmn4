@@ -5,6 +5,7 @@ import fetch from "isomorphic-fetch";
 let companies;
 let company;
 let users;
+let allUsers;
 
 const fetchCompanies = async (user) => {
   const res = await fetch("/api/get-companies", {
@@ -30,6 +31,53 @@ const fetchCompany = async (user, companyId) => {
   return company;
 };
 
+// const fetchGetAllUsers = async (user, search_term) => {
+//   console.log("fetch", search_term);
+//   const res = await fetch("/laravel/companies/get-all-users", {
+//     method: "POST",
+//     headers: { "Content-Type": "application/json;charset=utf-8" },
+//     body: JSON.stringify({
+//       user_sub: user.sub,
+//       search_term: search_term,
+//     }),
+//   });
+//   const allUsers = res.ok ? await res.json() : null;
+//   console.log(allUsers);
+
+//   return allUsers;
+// };
+// export const UseFetchGetAllUsers = (user, search_term) => {
+//   console.log(search_term);
+//   const [data, setAllUsers] = useState({
+//     AllUsersFromAPI: allUsers || null,
+//     AllUsersLoading: true,
+//   });
+
+//   React.useEffect(() => {
+//     if (user) {
+//       console.log(user);
+
+//       let isMounted = true;
+//       fetchGetAllUsers(user, search_term).then((AllUsersData) => {
+//         if (isMounted) {
+//           if (AllUsersData.error) {
+//             setAllUsers({
+//               AllUsersFromAPI: [],
+//               AllUsersLoading: false,
+//             });
+//           } else {
+//             setAllUsers({
+//               AllUsersFromAPI: AllUsersData,
+//               AllUsersLoading: false,
+//             });
+//           }
+//         }
+//       });
+//     }
+//   }, [user]);
+//   return data;
+// };
+
 const fetchUserAddedToCompany = async (user, companyId) => {
   var formData = new FormData();
   formData.append("user_sub", user.sub);
@@ -40,8 +88,9 @@ const fetchUserAddedToCompany = async (user, companyId) => {
     body: formData,
   });
   users = res.ok ? await res.json() : null;
+  console.log(users);
+
   return users;
-  console.log("users");
 };
 
 export const UseFetchUserAddedToCompany = (user, companyId) => {

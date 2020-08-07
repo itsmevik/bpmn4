@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 import { useFetchUser } from "../../hooks/user";
 import { useFetchCompany } from "../../hooks/company";
 import { UseFetchUserAddedToCompany } from "../../hooks/company";
-
+//import { UseFetchGetAllUsers } from "../../hooks/company";
 import { useFetchProjects } from "../../hooks/project";
 import AddIcon from "@material-ui/icons/Add";
 import CreateProject from "../../components/dialogs/create-project";
@@ -18,7 +18,9 @@ import Router from "next/router";
 import { makeStyles } from "@material-ui/styles";
 import EditProject from "../../components/dialogs/edit-project";
 
-import AddUSer from "../../components/dialogs/add-user";
+//import AddUser from "../../components/dialogs/add-user";
+import SearchUser from "../../components/dialogs/search-user";
+import UsersList from "../../components/company-users-item";
 const useStyles = makeStyles((theme) => ({
   gridClass: {
     position: "relative",
@@ -29,11 +31,14 @@ export default function (props) {
   const { user, userLoading } = useFetchUser();
   const router = useRouter();
   const { cid } = router.query;
+
   const { companyFromAPI, companyLoading } = useFetchCompany(user, cid);
   const { projectsFromAPI, projectsLoading } = useFetchProjects(user, cid);
   const { usersFromAPI, usersLoading } = UseFetchUserAddedToCompany(user, cid);
   console.log(usersFromAPI, usersLoading);
+
   const [projects, setProjects] = useState(projectsFromAPI);
+  const [companyusers, setCompanyusers] = useState(usersFromAPI);
   const [createProjectDialogOpened, setCreateProjectDialogOpened] = useState(
     false
   );
@@ -49,6 +54,14 @@ export default function (props) {
   useEffect(() => {
     setProjects(projectsFromAPI);
   }, [projectsFromAPI]);
+
+  useEffect(() => {
+    setCompanyusers(usersFromAPI);
+  }, [usersFromAPI]);
+
+  // useEffect(() => {
+  //   setAllUsers(AllUsersFromAPI);
+  // }, [AllUsersFromAPI]);
 
   if (companyFromAPI == null && !companyLoading) {
     router.push("/dashboard");
@@ -213,6 +226,16 @@ export default function (props) {
     }
   };
 
+  const getCompanyUsersList = (companyusers, usersLoading) => {
+    const classes = useStyles();
+
+    if (!usersLoading) {
+      if (companyusers) {
+        return <UsersList Item={companyusers}></UsersList>;
+      }
+    }
+  };
+
   const deleteConfirmationDialogCancel = () => {
     setDeleteConfirmationDialogOpened(false);
   };
@@ -247,7 +270,6 @@ export default function (props) {
             {companyFromAPI ? companyFromAPI.name : ""}
           </Link>
         </Breadcrumbs>
-
         <Grid container>
           <Grid item xs={12}>
             <div className="main-title">
@@ -270,6 +292,8 @@ export default function (props) {
             Add User
           </Button>
         </div>
+
+        <div>{getCompanyUsersList(companyusers, usersLoading)}</div>
         <div>
           <Grid container spacing={2} style={{ marginTop: 5 }}>
             <Grid item xs={12}>
@@ -286,11 +310,18 @@ export default function (props) {
             {getProjectsList(projects, projectsLoading)}
           </Grid>
         </div>
-        <AddUSer
+        {/* <AddUser
           open={addUserDialogOpened}
           setClose={closeUserAddDialogOpened}
           onSubmit={addUserToCompany}
-        ></AddUSer>
+          user={user}
+        ></AddUser> */}
+        <SearchUser
+          open={addUserDialogOpened}
+          setClose={closeUserAddDialogOpened}
+          onSubmit={addUserToCompany}
+          user={user}
+        ></SearchUser>
         <CreateProject
           open={createProjectDialogOpened}
           onCancel={closeCreateProjectDialog}
