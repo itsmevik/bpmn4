@@ -12,7 +12,10 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import IconButton from "@material-ui/core/IconButton";
 import EditIcon from "@material-ui/icons/Edit";
 import { Button } from "@material-ui/core";
-const columns = [{ id: "name", label: "Email", minWidth: 170 }];
+const columns = [
+  { id: "name", label: "Email", minWidth: 100 },
+  { id: "email", label: "Name", minWidth: 100 },
+];
 
 const useStyles = makeStyles({
   root: {
@@ -40,8 +43,9 @@ export default function UsersList(props) {
     setPage(0);
   };
 
-  const handleClick = (e, index) => {
+  const handleDelete = (e, index) => {
     console.log(index);
+    props.onDelete();
   };
   return (
     <Paper className={classes.root}>
@@ -67,27 +71,19 @@ export default function UsersList(props) {
             {props.Item.map((row, index) => {
               return (
                 <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                  {columns.map((column) => {
-                    const value = row.email[column.id];
-                    return (
-                      <TableCell
-                        key={column.id}
-                        align={column.align}
-                        size="small"
-                      >
-                        <IconButton
-                          style={{ width: 40, height: 40, marginRight: 20 }}
-                          onClick={() => handleClick(event, index)}
-                        >
-                          <DeleteIcon></DeleteIcon>
-                        </IconButton>
+                  <TableCell align="left" size="small">
+                    <IconButton
+                      style={{ width: 40, height: 40, marginRight: 20 }}
+                      onClick={() => handleDelete(event, index)}
+                    >
+                      <DeleteIcon></DeleteIcon>
+                    </IconButton>
 
-                        {column.format && typeof value === "number"
-                          ? column.format(value)
-                          : row.email}
-                      </TableCell>
-                    );
-                  })}
+                    {row.email ? row.email : ""}
+                  </TableCell>
+                  <TableCell align="left" size="small">
+                    {row.name ? row.name : "Pending"}
+                  </TableCell>
                 </TableRow>
               );
             }).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)}

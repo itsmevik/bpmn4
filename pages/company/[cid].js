@@ -21,6 +21,7 @@ import EditProject from "../../components/dialogs/edit-project";
 //import AddUser from "../../components/dialogs/add-user";
 import SearchUser from "../../components/dialogs/search-user";
 import UsersList from "../../components/company-users-item";
+import DeleteCompanyUserConfirmation from "../../components/dialogs/DeleteCompanyUserConfirmation";
 const useStyles = makeStyles((theme) => ({
   gridClass: {
     position: "relative",
@@ -45,9 +46,16 @@ export default function (props) {
   const [editProjectDialogClose, setEditProjectDialogClose] = useState(false);
   const [projectIdToDelete, setProjectIdToDelete] = useState("");
   const [projectNameToDelete, setProjectNameToDelete] = useState("");
+
+  const [companyIdToDelete, setCompanyIdToDelete] = useState("");
   const [
     deleteConfirmationDialogOpened,
     setDeleteConfirmationDialogOpened,
+  ] = useState(false);
+
+  const [
+    deleteUserConfirmationDialogOpened,
+    setDeleteUserConfirmationDialogOpened,
   ] = useState(false);
   const [addUserDialogOpened, setAddUserDialogOpened] = useState(false);
 
@@ -78,6 +86,10 @@ export default function (props) {
     setProjectIdToDelete(projectId);
     setProjectNameToDelete(projectName);
     setDeleteConfirmationDialogOpened(true);
+  };
+
+  const handleDeleteCompanyUser = () => {
+    setDeleteUserConfirmationDialogOpened(true);
   };
 
   const handleEditProject = (projectId) => {
@@ -123,7 +135,15 @@ export default function (props) {
     if (userInfo.ok) {
       console.log("userInfo.ok");
       var newUserInfo = await userInfo.json();
+      console.log(newUserInfo);
       closeUserAddDialogOpened();
+      // if (companyusers) {
+      //   var updateCompanyUsers = [...companyusers, newUserInfo.response];
+      //   setCompanyusers(updateCompanyUsers);
+      // } else {
+      //   setCompanyusers([newUserInfo.response]);
+      // }
+
       console.log(newUserInfo);
     }
   };
@@ -231,13 +251,22 @@ export default function (props) {
 
     if (!usersLoading) {
       if (companyusers) {
-        return <UsersList Item={companyusers}></UsersList>;
+        return (
+          <UsersList
+            Item={companyusers}
+            onDelete={handleDeleteCompanyUser}
+          ></UsersList>
+        );
       }
     }
   };
 
   const deleteConfirmationDialogCancel = () => {
     setDeleteConfirmationDialogOpened(false);
+  };
+
+  const deleteUserConfirmationDialogCancel = () => {
+    setDeleteUserConfirmationDialogOpened(false);
   };
 
   const deleteConfirmationDialogConfirm = async () => {
@@ -256,6 +285,29 @@ export default function (props) {
       setDeleteConfirmationDialogOpened(false);
     } else {
       setDeleteConfirmationDialogOpened(false);
+    }
+  };
+
+  const deleteCompanyUserDialogConfirm = async () => {
+    console.log("deleted");
+    const userInfo = await fetch(
+      "/laravel/companies/delete-user-from-company",
+      {
+        method: "POST",
+        body: JSON.stringify({
+          company_id: companyIdToDelete,
+          user_sub: user.sub,
+        }),
+      }
+    );
+    if (userInfo.ok) {
+      var updateCompanyUsers = companyusers.filter(
+        (companyUser) => companyUser.c_id != companyIdToDelete
+      );
+      setCompanyusers(updateCompanyUsers);
+      setDeleteUserConfirmationDialogOpened(false);
+    } else {
+      setDeleteUserConfirmationDialogOpened(false);
     }
   };
 
@@ -333,6 +385,12 @@ export default function (props) {
           onCancel={deleteConfirmationDialogCancel}
           onConfirm={deleteConfirmationDialogConfirm}
         ></DeleteConfirmation>
+        <DeleteCompanyUserConfirmation
+          message={`Are you sure to delete?`}
+          open={deleteUserConfirmationDialogOpened}
+          onCancel={deleteUserConfirmationDialogCancel}
+          onConfirm={deleteCompanyUserDialogConfirm}
+        ></DeleteCompanyUserConfirmation>
       </Layout>
     </Fragment>
   );
