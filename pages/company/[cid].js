@@ -47,7 +47,7 @@ export default function (props) {
   const [projectIdToDelete, setProjectIdToDelete] = useState("");
   const [projectNameToDelete, setProjectNameToDelete] = useState("");
 
-  const [companyIdToDelete, setCompanyIdToDelete] = useState("");
+  const [companyUserIdToDelete, setcompanyUserIdToDelete] = useState("");
   const [
     deleteConfirmationDialogOpened,
     setDeleteConfirmationDialogOpened,
@@ -71,6 +71,8 @@ export default function (props) {
   //   setAllUsers(AllUsersFromAPI);
   // }, [AllUsersFromAPI]);
 
+  //console.log(companyusers.map((row) => row.email));
+
   if (companyFromAPI == null && !companyLoading) {
     router.push("/dashboard");
   }
@@ -88,7 +90,9 @@ export default function (props) {
     setDeleteConfirmationDialogOpened(true);
   };
 
-  const handleDeleteCompanyUser = () => {
+  const handleDeleteCompanyUser = (companyID) => {
+    console.log(companyID);
+    setcompanyUserIdToDelete(companyID);
     setDeleteUserConfirmationDialogOpened(true);
   };
 
@@ -112,6 +116,7 @@ export default function (props) {
     });
     if (projectInfo.ok) {
       var newProjectInfo = await projectInfo.json();
+      console.log(newProjectInfo.response);
       closeCreateProjectDialog();
       if (projects) {
         var updatedProjects = [...projects, newProjectInfo.response];
@@ -137,14 +142,15 @@ export default function (props) {
       var newUserInfo = await userInfo.json();
       console.log(newUserInfo);
       closeUserAddDialogOpened();
-      // if (companyusers) {
-      //   var updateCompanyUsers = [...companyusers, newUserInfo.response];
-      //   setCompanyusers(updateCompanyUsers);
-      // } else {
-      //   setCompanyusers([newUserInfo.response]);
-      // }
+      if (companyusers) {
+        var updateCompanyUsers = [...companyusers, newUserInfo.user];
 
-      console.log(newUserInfo);
+        setCompanyusers(updateCompanyUsers);
+      } else {
+        setCompanyusers(newUserInfo);
+      }
+
+      // console.log(newUserInfo.user);
     }
   };
 
@@ -254,7 +260,7 @@ export default function (props) {
         return (
           <UsersList
             Item={companyusers}
-            onDelete={handleDeleteCompanyUser}
+            onDelete={(companyID) => handleDeleteCompanyUser(companyID)}
           ></UsersList>
         );
       }
@@ -289,20 +295,24 @@ export default function (props) {
   };
 
   const deleteCompanyUserDialogConfirm = async () => {
+    var formData = new FormData();
+
     console.log("deleted");
+    formData.append("company_id", cid);
+
+    formData.append("user_sub", user.sub);
+    formData.append("user_id", companyUserIdToDelete);
+
     const userInfo = await fetch(
       "/laravel/companies/delete-user-from-company",
       {
         method: "POST",
-        body: JSON.stringify({
-          company_id: companyIdToDelete,
-          user_sub: user.sub,
-        }),
+        body: formData,
       }
     );
     if (userInfo.ok) {
       var updateCompanyUsers = companyusers.filter(
-        (companyUser) => companyUser.c_id != companyIdToDelete
+        (companyUser) => companyUser.user_id != companyUserIdToDelete
       );
       setCompanyusers(updateCompanyUsers);
       setDeleteUserConfirmationDialogOpened(false);

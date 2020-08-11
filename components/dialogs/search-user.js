@@ -26,7 +26,7 @@ const renderSuggestion = (suggestion) => <span>{suggestion.email}</span>;
 export default class SerachUser extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { value: "", suggestions: [] };
+    this.state = { value: "", suggestions: [], buttonActive: true };
     console.log(this.props);
   }
 
@@ -69,7 +69,16 @@ export default class SerachUser extends React.Component {
   onSuggestionsClearRequested = () => {
     this.setState({ suggestions: [] });
   };
+  onSuggestionSelected = (event, { suggestion, method }) => {
+    if (method == "enter") {
+      event.preventDefault();
+    } else {
+      this.setState({ buttonActive: false });
+      event.preventDefault();
 
+      console.log(this.state.buttonActive);
+    }
+  };
   render() {
     const { value, suggestions } = this.state;
     console.log(this.state.value);
@@ -100,7 +109,7 @@ export default class SerachUser extends React.Component {
               onSuggestionsClearRequested={this.onSuggestionsClearRequested}
               getSuggestionValue={getSuggestionValue}
               renderSuggestion={renderSuggestion}
-              // onSuggestionSelected={onSuggestion}
+              onSuggestionSelected={this.onSuggestionSelected}
               inputProps={inputProps}
             />
           </DialogContent>

@@ -43,10 +43,10 @@ export default function UsersList(props) {
     setPage(0);
   };
 
-  const handleDelete = (e, index) => {
-    console.log(index);
-    props.onDelete();
-  };
+  // const handleDelete = (e, index) => {
+  //   console.log(index);
+  //   props.onDelete();
+  // };
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
@@ -74,7 +74,7 @@ export default function UsersList(props) {
                   <TableCell align="left" size="small">
                     <IconButton
                       style={{ width: 40, height: 40, marginRight: 20 }}
-                      onClick={() => handleDelete(event, index)}
+                      onClick={() => props.onDelete(row.user_id)}
                     >
                       <DeleteIcon></DeleteIcon>
                     </IconButton>
