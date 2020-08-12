@@ -6,6 +6,7 @@ let flows;
 let flow;
 let publicFlow;
 let getPublishFlow;
+let allFlows;
 const fetchFlows = async (projectId, user) => {
   const res = await fetch("/laravel/flows/get-flows", {
     method: "POST",
@@ -36,6 +37,53 @@ const fetchFlow = async (user, flowId) => {
   flow = res.ok ? await res.json() : null;
 
   return flow;
+};
+
+const fetchAllFlows = async (user) => {
+  // var formData = new FormData();
+  //formData.append("user_sub", user);
+
+  const res = await fetch("/laravel/companies/get-all/flows", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      user_sub: user.sub,
+    }),
+  });
+
+  allFlows = res.ok ? await res.json() : null;
+
+  return allFlows;
+};
+export const useFetchGetAllFlows = (user) => {
+  const [data, setAllFlows] = useState({
+    AllFlowsFromAPI: allFlows || null,
+    AllFlowsLoading: true,
+  });
+  useEffect(() => {
+    if (!user) {
+      return;
+    }
+    let isMounted = true;
+    fetchAllFlows(user).then((flowsData) => {
+      if (isMounted) {
+        if (
+          flowsData &&
+          flowsData.message == "User Company does't have flows"
+        ) {
+          setAllFlows({ AllFlowsFromAPI: [], AllFlowsLoading: false });
+        } else {
+          setAllFlows({
+            AllFlowsFromAPI: flowsData,
+            AllFlowsLoading: false,
+          });
+        }
+      }
+    });
+  }, [user]);
+  return data;
 };
 
 // const fetchPublicFlow = async (flowId, user, publish) => {

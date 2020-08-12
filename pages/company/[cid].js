@@ -128,6 +128,7 @@ export default function (props) {
   };
 
   const addUserToCompany = async (UserMail) => {
+    console.log(UserMail);
     var formData = new FormData();
     formData.append("company_id", cid);
     formData.append("user_sub", user.sub);
@@ -381,7 +382,7 @@ export default function (props) {
         <SearchUser
           open={addUserDialogOpened}
           setClose={closeUserAddDialogOpened}
-          onSubmit={addUserToCompany}
+          onSubmit={(UserMail) => addUserToCompany(UserMail)}
           user={user}
         ></SearchUser>
         <CreateProject

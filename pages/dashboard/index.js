@@ -9,10 +9,12 @@ import { getRandomString } from "../../utils";
 import { useFetchCompanies } from "../../hooks/company";
 import CompanyItem from "../../components/company-item";
 import Router from "next/router";
+
 import DeleteConfirmation from "../../components/dialogs/delete-confirmation";
 import { makeStyles } from "@material-ui/styles";
 import EditCompany from "../../components/dialogs/edit-company";
-
+import { useFetchGetAllFlows } from "../../hooks/flow";
+import GetAllFlows from "../../components/allFlows-item";
 const useStyles = makeStyles((theme) => ({
   gridClass: {
     position: "relative",
@@ -33,7 +35,14 @@ function Dashboard(props) {
 
   const { companiesFromAPI, companiesLoading } = useFetchCompanies(user);
 
+  const { AllFlowsFromAPI, AllFlowsLoading } = useFetchGetAllFlows(user);
+
+  console.log(AllFlowsFromAPI);
+
   const [companies, setCompanies] = useState(companiesFromAPI);
+
+  const [allFlows, setAllFlows] = useState(AllFlowsFromAPI);
+  console.log(allFlows, AllFlowsFromAPI);
   const [
     deleteConfirmationDialogOpened,
     setDeleteConfirmationDialogOpened,
@@ -42,6 +51,10 @@ function Dashboard(props) {
   useEffect(() => {
     setCompanies(companiesFromAPI);
   }, [companiesFromAPI]);
+
+  useEffect(() => {
+    setAllFlows(AllFlowsFromAPI);
+  }, [AllFlowsFromAPI]);
 
   const [newCompanyDialogOpened, setNewCompanyDialogOpened] = useState(false);
   const [companyIdToDelete, setCompanyIdToDelete] = useState("");
@@ -76,6 +89,7 @@ function Dashboard(props) {
       var updatedCompanies = companies.filter(
         (company) => company.c_id != companyIdToDelete
       );
+
       setCompanies(updatedCompanies);
       setDeleteConfirmationDialogOpened(false);
     } else {
@@ -163,6 +177,23 @@ function Dashboard(props) {
     //setNewCompanyDialogOpened(false);
     setEditCompanyDialogClose(false);
   };
+  const handleFlowClick = (flow_id) => {
+    console.log(flow_id);
+    Router.push(`/flow/${flow_id}`);
+  };
+
+  const getAllflowsList = (allFlows, AllFlowsLoading) => {
+    if (!AllFlowsLoading) {
+      if (allFlows) {
+        return (
+          <GetAllFlows
+            Item={allFlows}
+            onFlowClick={(flow_id) => handleFlowClick(flow_id)}
+          ></GetAllFlows>
+        );
+      }
+    }
+  };
 
   const getCompaniesList = (companies, companiesLoading) => {
     const classes = useStyles();
@@ -222,6 +253,9 @@ function Dashboard(props) {
 
             {getCompaniesList(companies, companiesLoading)}
           </Grid>
+        </div>
+        <div style={{ marginTop: 50 }}>
+          {getAllflowsList(allFlows, AllFlowsLoading)}
         </div>
       </Layout>
       <CreateCompanyDialog

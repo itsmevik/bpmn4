@@ -75,13 +75,11 @@ export default class SerachUser extends React.Component {
     } else {
       this.setState({ buttonActive: false });
       event.preventDefault();
-
-      console.log(this.state.buttonActive);
     }
   };
   render() {
     const { value, suggestions } = this.state;
-    console.log(this.state.value);
+    // console.log(this.state.value);
     const inputProps = {
       placeholder: "Search Users",
       value,
