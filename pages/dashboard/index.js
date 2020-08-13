@@ -85,6 +85,7 @@ function Dashboard(props) {
         company_id: companyIdToDelete,
       }),
     });
+
     if (companyInfo.ok) {
       var updatedCompanies = companies.filter(
         (company) => company.c_id != companyIdToDelete
@@ -95,6 +96,21 @@ function Dashboard(props) {
     } else {
       setDeleteConfirmationDialogOpened(false);
     }
+
+    const res = await fetch("/laravel/companies/get-all/flows", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        user_sub: user.sub,
+      }),
+    });
+
+    var allFlow = res.ok ? await res.json() : null;
+    //console.log(allFlow);
+    setAllFlows(allFlow);
+    return allFlow;
   };
   const createNewCompany = async (companyName, companyDescription) => {
     const companyInfo = await fetch("/api/create-company", {

@@ -14,6 +14,7 @@ const fetchProjects = async (user, companyID) => {
     }),
   });
   projects = res.ok ? await res.json() : null;
+  console.log(projects);
   return projects;
 };
 

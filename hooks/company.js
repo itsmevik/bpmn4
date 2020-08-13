@@ -4,7 +4,7 @@ import fetch from "isomorphic-fetch";
 
 let companies;
 let company;
-let users;
+let companyusers;
 let allUsers;
 
 const fetchCompanies = async (user) => {
@@ -87,15 +87,15 @@ const fetchUserAddedToCompany = async (user, companyId) => {
     method: "POST",
     body: formData,
   });
-  users = res.ok ? await res.json() : null;
-  console.log(users);
+  companyusers = res.ok ? await res.json() : null;
+  console.log(companyusers);
 
-  return users;
+  return companyusers;
 };
 
 export const UseFetchUserAddedToCompany = (user, companyId) => {
-  const [data, setUsers] = useState({
-    usersFromAPI: users || null,
+  const [data, setCompanyusers] = React.useState({
+    usersFromAPI: companyusers || null,
     usersLoading: true,
   });
   React.useEffect(() => {
@@ -107,12 +107,12 @@ export const UseFetchUserAddedToCompany = (user, companyId) => {
     fetchUserAddedToCompany(user, companyId).then((userData) => {
       if (isMounted) {
         if (userData && userData.message == "no users are added") {
-          setUsers({
+          setCompanyusers({
             usersFromAPI: [],
             usersLoading: false,
           });
         } else {
-          setUsers({
+          setCompanyusers({
             usersFromAPI: userData,
             usersLoading: false,
           });

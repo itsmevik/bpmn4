@@ -45,7 +45,7 @@ export default class SerachUser extends React.Component {
       }),
     });
     const allUsers = res.ok ? await res.json() : null;
-    console.log(allUsers.users.map((user) => user));
+    //console.log(allUsers.users.map((user) => user));
     return allUsers;
   };
   onSuggestionsFetchRequested = ({ value }) => {

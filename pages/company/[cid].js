@@ -40,6 +40,7 @@ export default function (props) {
 
   const [projects, setProjects] = useState(projectsFromAPI);
   const [companyusers, setCompanyusers] = useState(usersFromAPI);
+  console.log(companyusers);
   const [createProjectDialogOpened, setCreateProjectDialogOpened] = useState(
     false
   );
@@ -90,9 +91,9 @@ export default function (props) {
     setDeleteConfirmationDialogOpened(true);
   };
 
-  const handleDeleteCompanyUser = (companyID) => {
-    console.log(companyID);
-    setcompanyUserIdToDelete(companyID);
+  const handleDeleteCompanyUser = (UserID) => {
+    console.log(UserID);
+    setcompanyUserIdToDelete(UserID);
     setDeleteUserConfirmationDialogOpened(true);
   };
 
@@ -145,6 +146,7 @@ export default function (props) {
       closeUserAddDialogOpened();
       if (companyusers) {
         var updateCompanyUsers = [...companyusers, newUserInfo.user];
+        console.log(companyusers, updateCompanyUsers);
 
         setCompanyusers(updateCompanyUsers);
       } else {
@@ -261,7 +263,7 @@ export default function (props) {
         return (
           <UsersList
             Item={companyusers}
-            onDelete={(companyID) => handleDeleteCompanyUser(companyID)}
+            onDelete={(UserID) => handleDeleteCompanyUser(UserID)}
           ></UsersList>
         );
       }
@@ -315,6 +317,7 @@ export default function (props) {
       var updateCompanyUsers = companyusers.filter(
         (companyUser) => companyUser.user_id != companyUserIdToDelete
       );
+
       setCompanyusers(updateCompanyUsers);
       setDeleteUserConfirmationDialogOpened(false);
     } else {
