@@ -144,17 +144,24 @@ export default function (props) {
       var newUserInfo = await userInfo.json();
       console.log(newUserInfo);
       closeUserAddDialogOpened();
-      if (companyusers) {
-        var updateCompanyUsers = [...companyusers, newUserInfo.user];
-        console.log(companyusers, updateCompanyUsers);
+      // if (companyusers) {
+      //   var updateCompanyUsers = [...companyusers, newUserInfo.user];
+      //   console.log(companyusers, updateCompanyUsers);
 
-        setCompanyusers(updateCompanyUsers);
-      } else {
-        setCompanyusers(newUserInfo);
-      }
+      //   setCompanyusers(updateCompanyUsers);
+      // } else {
+      //   setCompanyusers(newUserInfo);
+      // }
 
       // console.log(newUserInfo.user);
     }
+
+    const res = await fetch("/laravel/companies/get-company-users", {
+      method: "POST",
+      body: formData,
+    });
+    let companyuser = res.ok ? await res.json() : null;
+    setCompanyusers(companyuser);
   };
 
   const editProject = async (name, description, projectData) => {
