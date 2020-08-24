@@ -142,7 +142,9 @@ export default function (props) {
     if (userInfo.ok) {
       console.log("userInfo.ok");
       var newUserInfo = await userInfo.json();
-      console.log(newUserInfo);
+      console.log(
+        newUserInfo.message ? newUserInfo.message : newUserInfo.success
+      );
       closeUserAddDialogOpened();
       // if (companyusers) {
       //   var updateCompanyUsers = [...companyusers, newUserInfo.user];

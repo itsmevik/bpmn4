@@ -11,6 +11,7 @@ export default class BPMNContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = { zoomCount: 2 };
+    console.log(props.onZoom);
   }
   componentDidMount() {
     this.modeler = new BpmnModeler({
@@ -41,33 +42,49 @@ export default class BPMNContainer extends React.Component {
   render() {
     return (
       <React.Fragment>
-        <IconButton
-          style={{ float: "right", zIndex: 9999, width: 50, height: 50 }}
+        <div
+          style={{
+            float: "right",
+            position: "relative",
+            top: this.props.onZoomClick ? 64 : -100,
+          }}
         >
-          <SaveIcon
-            fontSize="large"
-            color="primary"
-            onClick={() => this.saveDiagram()}
+          <IconButton
+            style={{
+              zIndex: 1,
+              width: 50,
+              height: 50,
+            }}
           >
-            Save
-          </SaveIcon>
-        </IconButton>
+            <SaveIcon
+              fontSize="large"
+              color="primary"
+              onClick={() => this.saveDiagram()}
+            >
+              Save
+            </SaveIcon>
+          </IconButton>
+        </div>
 
         <div id="bpmnview"></div>
         <style jsx>
           {`
             #bpmnview {
               height: 100vh;
+              position: relative;
+              top: -50px;
             }
           `}
         </style>
+
         <div
           style={{
             float: "right",
             position: "absolute",
             right: 0,
-            bottom: -60,
+            bottom: this.props.onZoomClick ? 111 : -60,
             width: 60,
+            zIndex: 9999,
           }}
         >
           <IconButton
@@ -101,7 +118,7 @@ export default class BPMNContainer extends React.Component {
                 count--;
                 // console.log(count * 0.5, this.state.zoomCount);
 
-                this.setState({ zoomCount: count *0.8});
+                this.setState({ zoomCount: count * 0.8 });
                 canvas.zoom(count * 0.5);
               }
               // if (count == 4) {
