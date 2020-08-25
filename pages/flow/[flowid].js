@@ -268,7 +268,6 @@ export default function (props) {
     viewerLink = host + "/viewer/" + flowid;
     //console.log(viewerLink);
   }
-  const [isclicked, setIsclicked] = useState(false);
 
   const [isActive, setActive] = useState(false);
   const zoomCanvas = () => {
@@ -287,6 +286,22 @@ export default function (props) {
       //exitZoomCanvas();
     }
   };
+  const [isclicked, setIsclicked] = useState(false);
+
+  useEffect(() => {
+    document.addEventListener("keydown", escFunction, false);
+
+    return () => {
+      document.removeEventListener("keydown", escFunction, false);
+    };
+  }, []);
+
+  const escFunction = React.useCallback((event) => {
+    if (event.keyCode == 27) {
+      console.log("esc");
+      setIsclicked(true);
+    }
+  }, []);
 
   const openZoomCanvas = () => {
     var elem = document.documentElement;
@@ -364,7 +379,8 @@ export default function (props) {
                 <h2
                   style={{
                     margin: 0,
-                    paddingBottom: 15,
+                    paddingBottom: 56,
+                    marginTop: -39,
                   }}
                 >
                   {flow ? flow.name : ""}
