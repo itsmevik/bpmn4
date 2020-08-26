@@ -15,6 +15,11 @@ import { makeStyles } from "@material-ui/styles";
 import EditCompany from "../../components/dialogs/edit-company";
 import { useFetchGetAllFlows } from "../../hooks/flow";
 import GetAllFlows from "../../components/allFlows-item";
+import Accordion from "@material-ui/core/Accordion";
+import AccordionSummary from "@material-ui/core/AccordionSummary";
+import AccordionDetails from "@material-ui/core/AccordionDetails";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+
 const useStyles = makeStyles((theme) => ({
   gridClass: {
     position: "relative",
@@ -255,20 +260,33 @@ function Dashboard(props) {
               </div>
             </Grid>
           </Grid>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <Button
-                variant="contained"
-                color="primary"
-                startIcon={<AddIcon />}
-                onClick={() => handleCreateCompanyButtonClick()}
-              >
-                Create a Company
-              </Button>
-            </Grid>
-
-            {getCompaniesList(companies, companiesLoading)}
+          <Grid item xs={12}>
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={<AddIcon />}
+              onClick={() => handleCreateCompanyButtonClick()}
+            >
+              Create a Company
+            </Button>
           </Grid>
+          <br></br>
+          <Accordion>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel1a-content"
+              id="panel1a-header"
+            >
+              <Typography style={{ fontSize: 20 }}>Companies</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Typography>
+                <Grid container spacing={2}>
+                  {getCompaniesList(companies, companiesLoading)}
+                </Grid>
+              </Typography>
+            </AccordionDetails>
+          </Accordion>
         </div>
         <div style={{ marginTop: 50 }}>
           {getAllflowsList(allFlows, AllFlowsLoading)}
