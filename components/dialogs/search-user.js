@@ -27,7 +27,7 @@ export default class SerachUser extends React.Component {
   constructor(props) {
     super(props);
     this.state = { value: "", suggestions: [], buttonActive: true };
-    console.log(this.props);
+    //console.log(this.props);
   }
 
   onChange = (event, { newValue, method }) => {
@@ -35,7 +35,7 @@ export default class SerachUser extends React.Component {
   };
 
   fetchGetAllUsers = async (user, search_term) => {
-    console.log("fetch", search_term);
+    //console.log("fetch", search_term);
     const res = await fetch("/laravel/companies/get-all-users", {
       method: "POST",
       headers: { "Content-Type": "application/json;charset=utf-8" },
@@ -63,7 +63,7 @@ export default class SerachUser extends React.Component {
       }
     );
 
-    console.log(val);
+    // console.log(val);
   };
 
   onSuggestionsClearRequested = () => {
@@ -77,13 +77,86 @@ export default class SerachUser extends React.Component {
       event.preventDefault();
     }
   };
+
+  handleSubmit() {
+    // console.log("clicked");
+    // console.log(this.props);
+    this.props.onSubmit(this.state.value);
+
+    setTimeout(() => {
+      this.state.value = "";
+      this.setState({ buttonActive: true });
+    }, 800);
+  }
+  handleClose() {
+    this.props.setClose(false);
+    this.state.value = "";
+    this.setState({ buttonActive: true });
+  }
+
   render() {
     const { value, suggestions } = this.state;
+
+    const theme = {
+      container: {
+        position: "relative",
+      },
+      input: {
+        width: 280,
+        height: 40,
+        padding: "10px 20px",
+        fontFamily: "Helvetica, sans-serif",
+        fontWeight: 300,
+        fontSize: 16,
+        border: "1px solid #aaa",
+        borderTopLeftRadius: 4,
+        borderTopRightRadius: 4,
+        borderBottomLeftRadius: 4,
+        borderBottomRightRadius: 4,
+      },
+      inputFocused: {
+        outline: "none",
+      },
+      inputOpen: {
+        borderBottomLeftRadius: 0,
+        borderBottomRightRadius: 0,
+      },
+      suggestionsContainer: {
+        display: "none",
+      },
+      suggestionsContainerOpen: {
+        display: "block",
+        //position: "absolute",
+        top: 51,
+        width: 280,
+        border: "1px solid #aaa",
+        backgroundColor: "#fff",
+        fontFamily: "Helvetica, sans-serif",
+        fontWeight: 300,
+        fontSize: 16,
+        borderBottomLeftRadius: 4,
+        borderBottomRightRadius: 4,
+        zIndex: 2,
+      },
+      suggestionsList: {
+        margin: 0,
+        padding: 0,
+        listStyleType: "none",
+      },
+      suggestion: {
+        cursor: "pointer",
+        padding: "10px 20px",
+      },
+      suggestionHighlighted: {
+        backgroundColor: "#ddd",
+      },
+    };
     // console.log(this.state.value);
     const inputProps = {
-      placeholder: "Search Users",
+      placeholder: "Search User",
       value,
       onChange: this.onChange,
+      required: "true",
     };
 
     return (
@@ -96,10 +169,10 @@ export default class SerachUser extends React.Component {
           aria-labelledby="alert-dialog-slide-title"
           aria-describedby="alert-dialog-slide-description"
         >
-          <DialogTitle id="alert-dialog-slide-title">{"Add User"}</DialogTitle>
+          <DialogTitle id="alert-dialog-slide-title">{"ADD USER"}</DialogTitle>
 
           <DialogContent className="dialog-content">
-            <DialogContentText id="alert-dialog-slide-description"></DialogContentText>
+            {/* <DialogContentText id="alert-dialog-slide-description"></DialogContentText> */}
 
             <Autosuggest
               suggestions={suggestions}
@@ -109,21 +182,18 @@ export default class SerachUser extends React.Component {
               renderSuggestion={renderSuggestion}
               onSuggestionSelected={this.onSuggestionSelected}
               inputProps={inputProps}
+              theme={theme}
             />
           </DialogContent>
           <DialogActions className="footer">
-            <Button
-              onClick={() => {
-                this.props.setClose(false);
-              }}
-              color="primary"
-            >
+            <Button onClick={() => this.handleClose()} color="primary">
               Cancel
             </Button>
             <Button
+              disabled={this.state.buttonActive}
               color="primary"
               variant="contained"
-              onClick={() => this.props.onSubmit(this.state.value)}
+              onClick={() => this.handleSubmit()}
             >
               Add
             </Button>

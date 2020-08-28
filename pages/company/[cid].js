@@ -11,6 +11,7 @@ import { UseFetchUserAddedToCompany } from "../../hooks/company";
 //import { UseFetchGetAllUsers } from "../../hooks/company";
 import { useFetchProjects } from "../../hooks/project";
 import AddIcon from "@material-ui/icons/Add";
+import PersonAddIcon from "@material-ui/icons/PersonAdd";
 import CreateProject from "../../components/dialogs/create-project";
 import fetch from "isomorphic-fetch";
 import DeleteConfirmation from "../../components/dialogs/delete-confirmation";
@@ -22,6 +23,8 @@ import EditProject from "../../components/dialogs/edit-project";
 import SearchUser from "../../components/dialogs/search-user";
 import UsersList from "../../components/company-users-item";
 import DeleteCompanyUserConfirmation from "../../components/dialogs/DeleteCompanyUserConfirmation";
+import cogoToast from "cogo-toast";
+
 const useStyles = makeStyles((theme) => ({
   gridClass: {
     position: "relative",
@@ -145,6 +148,11 @@ export default function (props) {
       console.log(
         newUserInfo.message ? newUserInfo.message : newUserInfo.success
       );
+      // cogoToast.success(
+      //   newUserInfo.message ? newUserInfo.message : newUserInfo.success,
+      //   { position: "top-center" }
+      // );
+
       closeUserAddDialogOpened();
       // if (companyusers) {
       //   var updateCompanyUsers = [...companyusers, newUserInfo.user];
@@ -361,14 +369,16 @@ export default function (props) {
           <Button
             variant="contained"
             color="primary"
-            startIcon={<AddIcon />}
+            startIcon={<PersonAddIcon />}
             onClick={() => handleAddUserButtonClick()}
           >
             Add User
           </Button>
         </div>
 
-        <div>{getCompanyUsersList(companyusers, usersLoading)}</div>
+        <div style={{ marginTop: 10 }}>
+          {getCompanyUsersList(companyusers, usersLoading)}
+        </div>
         <div>
           <Grid container spacing={2} style={{ marginTop: 5 }}>
             <Grid item xs={12}>
