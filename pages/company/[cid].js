@@ -137,7 +137,7 @@ export default function (props) {
     formData.append("company_id", cid);
     formData.append("user_sub", user.sub);
     formData.append("email", UserMail);
-    formData.append("is_admin", 1);
+    formData.append("is_admin", 0);
     const userInfo = await fetch("/laravel/companies/add-user-to-company", {
       method: "POST",
       body: formData,
@@ -172,6 +172,38 @@ export default function (props) {
     });
     let companyuser = res.ok ? await res.json() : null;
     setCompanyusers(companyuser);
+  };
+
+  const updateCompanyUsersAdded = async (value, userID) => {
+    var formData = new FormData();
+    formData.append("company_id", cid);
+    formData.append("user_sub", user.sub);
+    formData.append("user_id", userID);
+    formData.append("is_admin", value);
+
+    const userInfo = await fetch(
+      "/laravel/companies/update-user-role-to-company",
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
+
+    if (userInfo.ok) {
+      var newUserInfo = await userInfo.json();
+      // console.log(newUserInfo);
+      if (companyusers) {
+        let userIndex = companyusers.findIndex(
+          (element) => element.user_id == userID
+        );
+
+        let newUser = [...companyusers];
+        newUser[userIndex].is_admin = value;
+        // console.log(...newUser);
+        setCompanyusers(newUser);
+        //console.log(companyusers);
+      }
+    }
   };
 
   const editProject = async (name, description, projectData) => {
@@ -281,9 +313,13 @@ export default function (props) {
           <UsersList
             Item={companyusers}
             onDelete={(UserID) => handleDeleteCompanyUser(UserID)}
+            onUpdate={(value, user_id) =>
+              updateCompanyUsersAdded(value, user_id)
+            }
           ></UsersList>
         );
       }
+      return <div>You don't have any Users</div>;
     }
   };
 

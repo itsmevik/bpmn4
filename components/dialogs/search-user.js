@@ -156,7 +156,6 @@ export default class SerachUser extends React.Component {
       placeholder: "Search User",
       value,
       onChange: this.onChange,
-      required: "true",
     };
 
     return (
@@ -190,7 +189,7 @@ export default class SerachUser extends React.Component {
               Cancel
             </Button>
             <Button
-              disabled={this.state.buttonActive}
+              disabled={this.state.buttonActive && this.state.value.length <= 5}
               color="primary"
               variant="contained"
               onClick={() => this.handleSubmit()}
