@@ -279,13 +279,10 @@ function Dashboard(props) {
             >
               <Typography style={{ fontSize: 20 }}>Companies</Typography>
             </AccordionSummary>
-            <AccordionDetails>
-              <Typography>
-                <Grid container spacing={2}>
-                  {getCompaniesList(companies, companiesLoading)}
-                </Grid>
-              </Typography>
-            </AccordionDetails>
+
+            <Grid container spacing={2}>
+              {getCompaniesList(companies, companiesLoading)}
+            </Grid>
           </Accordion>
         </div>
         <div style={{ marginTop: 50 }}>
