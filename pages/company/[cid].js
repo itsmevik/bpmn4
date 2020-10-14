@@ -11,6 +11,7 @@ import { UseFetchUserAddedToCompany } from "../../hooks/company";
 //import { UseFetchGetAllUsers } from "../../hooks/company";
 import { useFetchProjects } from "../../hooks/project";
 import AddIcon from "@material-ui/icons/Add";
+import PersonAddIcon from "@material-ui/icons/PersonAdd";
 import CreateProject from "../../components/dialogs/create-project";
 import fetch from "isomorphic-fetch";
 import DeleteConfirmation from "../../components/dialogs/delete-confirmation";
@@ -22,6 +23,8 @@ import EditProject from "../../components/dialogs/edit-project";
 import SearchUser from "../../components/dialogs/search-user";
 import UsersList from "../../components/company-users-item";
 import DeleteCompanyUserConfirmation from "../../components/dialogs/DeleteCompanyUserConfirmation";
+import cogoToast from "cogo-toast";
+
 const useStyles = makeStyles((theme) => ({
   gridClass: {
     position: "relative",
@@ -134,7 +137,7 @@ export default function (props) {
     formData.append("company_id", cid);
     formData.append("user_sub", user.sub);
     formData.append("email", UserMail);
-    formData.append("is_admin", 1);
+    formData.append("is_admin", 0);
     const userInfo = await fetch("/laravel/companies/add-user-to-company", {
       method: "POST",
       body: formData,
@@ -142,7 +145,14 @@ export default function (props) {
     if (userInfo.ok) {
       console.log("userInfo.ok");
       var newUserInfo = await userInfo.json();
-      console.log(newUserInfo);
+      console.log(
+        newUserInfo.message ? newUserInfo.message : newUserInfo.success
+      );
+      // cogoToast.success(
+      //   newUserInfo.message ? newUserInfo.message : newUserInfo.success,
+      //   { position: "top-center" }
+      // );
+
       closeUserAddDialogOpened();
       // if (companyusers) {
       //   var updateCompanyUsers = [...companyusers, newUserInfo.user];
@@ -162,6 +172,38 @@ export default function (props) {
     });
     let companyuser = res.ok ? await res.json() : null;
     setCompanyusers(companyuser);
+  };
+
+  const updateCompanyUsersAdded = async (value, userID) => {
+    var formData = new FormData();
+    formData.append("company_id", cid);
+    formData.append("user_sub", user.sub);
+    formData.append("user_id", userID);
+    formData.append("is_admin", value);
+
+    const userInfo = await fetch(
+      "/laravel/companies/update-user-role-to-company",
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
+
+    if (userInfo.ok) {
+      var newUserInfo = await userInfo.json();
+      // console.log(newUserInfo);
+      if (companyusers) {
+        let userIndex = companyusers.findIndex(
+          (element) => element.user_id == userID
+        );
+
+        let newUser = [...companyusers];
+        newUser[userIndex].is_admin = value;
+        // console.log(...newUser);
+        setCompanyusers(newUser);
+        //console.log(companyusers);
+      }
+    }
   };
 
   const editProject = async (name, description, projectData) => {
@@ -271,9 +313,13 @@ export default function (props) {
           <UsersList
             Item={companyusers}
             onDelete={(UserID) => handleDeleteCompanyUser(UserID)}
+            onUpdate={(value, user_id) =>
+              updateCompanyUsersAdded(value, user_id)
+            }
           ></UsersList>
         );
       }
+      return <div>You don't have any Users</div>;
     }
   };
 
@@ -359,14 +405,16 @@ export default function (props) {
           <Button
             variant="contained"
             color="primary"
-            startIcon={<AddIcon />}
+            startIcon={<PersonAddIcon />}
             onClick={() => handleAddUserButtonClick()}
           >
             Add User
           </Button>
         </div>
 
-        <div>{getCompanyUsersList(companyusers, usersLoading)}</div>
+        <div style={{ marginTop: 10 }}>
+          {getCompanyUsersList(companyusers, usersLoading)}
+        </div>
         <div>
           <Grid container spacing={2} style={{ marginTop: 5 }}>
             <Grid item xs={12}>

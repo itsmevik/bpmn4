@@ -12,27 +12,47 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import IconButton from "@material-ui/core/IconButton";
 import EditIcon from "@material-ui/icons/Edit";
 import { Button } from "@material-ui/core";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select";
+import NativeSelect from "@material-ui/core/NativeSelect";
+
 const columns = [
   { id: "name", label: "Email", minWidth: 100 },
-  { id: "email", label: "Name", minWidth: 100 },
+  { id: "email", label: "Name", minWidth: 200 },
+  { id: "status", label: "Status", minWidth: 100 },
 ];
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
   },
   container: {
     maxHeight: 440,
   },
-});
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
+  },
+  selectEmpty: {
+    marginTop: theme.spacing(2),
+    minWidth: 100,
+  },
+}));
 
 export default function UsersList(props) {
   //console.log(props.Item.map((row) => row.email).slice(0, 2));
   //const js = JSON.stringify(val);
   //const rows = { js };
+  // console.log(props.Item.map((row) => (row.is_admin == 0 ? "user" : "admin")));
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
+  const handleClick = (value, user_id) => {
+    console.log(value, user_id);
+    props.onUpdate(value, user_id);
+  };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -83,6 +103,33 @@ export default function UsersList(props) {
                   </TableCell>
                   <TableCell align="left" size="small">
                     {row.name ? row.name : "Pending"}
+                  </TableCell>
+                  <TableCell align="left" size="small">
+                    <FormControl>
+                      <NativeSelect
+                        defaultValue={row.is_admin}
+                        inputProps={{
+                          name: "name",
+                          id: row.id,
+                        }}
+                      >
+                        <option value={0}>{"User"}</option>
+                        <option value={1}>{"Admin"}</option>
+                      </NativeSelect>
+                    </FormControl>
+
+                    <Button
+                      color="primary"
+                      variant="contained"
+                      size="small"
+                      style={{ marginLeft: 50 }}
+                      onClick={() => {
+                        let value = document.getElementById(row.id).value;
+                        handleClick(value, row.user_id);
+                      }}
+                    >
+                      Update
+                    </Button>
                   </TableCell>
                 </TableRow>
               );
