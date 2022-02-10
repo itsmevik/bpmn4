@@ -27,7 +27,7 @@
     "next": "^9.2.2",
     "next-cookies": "^2.0.3",
     "next-transpile-modules": "^3.0.2",
-    "node-sass": "^4.13.1",
+    "node-sass": "^7.0.0",
     "pm2": "^4.4.0",
     "react": "^16.13.0",
     "react-autosuggest": "^10.0.2",
